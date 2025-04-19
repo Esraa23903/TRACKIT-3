@@ -92,7 +92,8 @@ export default function SupplyChainScreen() {
       activeOpacity={0.7}
     >
       <Image 
-        source={{ uri: item.image }} 
+        source={{ uri: item.image || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0'
+        }} 
         style={styles.supplierImage} 
         resizeMode="cover"
       />

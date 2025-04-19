@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Stack, useRouter } from 'expo-router';
+import { Stack, useRouter, useLocalSearchParams } from 'expo-router';
 import Colors from '@/constants/colors';
 import { X, ChevronDown, Plus, Minus, ShoppingCart } from 'lucide-react-native';
 import { suppliers } from '@/mocks/suppliers';
@@ -10,12 +10,19 @@ import { Supplier, Product } from '@/types';
 
 export default function NewOrderScreen() {
   const router = useRouter();
-  const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
+  const params = useLocalSearchParams();
+  const initialSupplierId = params.supplierId as string;
+  const initialProductId = params.productId as string;
+  
+  const initialSupplier = initialSupplierId ? suppliers.find(s => s.id === initialSupplierId) : null;
+  const initialProduct = initialProductId ? products.find(p => p.id === initialProductId) : null;
+  
+  const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(initialSupplier);
   const [showSupplierDropdown, setShowSupplierDropdown] = useState(false);
   const [orderItems, setOrderItems] = useState<{
     product: Product;
     quantity: number;
-  }[]>([]);
+  }[]>(initialProduct ? [{ product: initialProduct, quantity: 1 }] : []);
   const [showProductSelector, setShowProductSelector] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 

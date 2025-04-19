@@ -15,11 +15,14 @@ export interface Product {
   price: number;
   cost: number;
   quantity: number;
-  lowStockThreshold: number;
+  stock?: number; // Added stock property
+  lowStockThreshold?: number;
+  minStockLevel: number; // Added minStockLevel property
   sku: string;
   barcode?: string;
   image?: string;
   supplier?: string;
+  supplierId?: string; // Added supplierId property
   createdAt: string;
   updatedAt: string;
 }
@@ -31,6 +34,7 @@ export interface Supplier {
   phone: string;
   address: string;
   logo?: string;
+  image?: string; // Added image property
   categories: string[];
   rating: number;
   productsCount: number;
@@ -40,12 +44,15 @@ export interface Order {
   id: string;
   supplierId: string;
   supplierName: string;
-  status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+  businessName?: string; // Added businessName property
+  status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled' | 'new' | 'processing';
   items: OrderItem[];
   totalAmount: number;
   createdAt: string;
   updatedAt: string;
+  orderDate: string; // Added orderDate property
   estimatedDelivery?: string;
+  expectedDelivery?: string; // Added expectedDelivery property
   trackingNumber?: string;
 }
 
@@ -54,7 +61,7 @@ export interface OrderItem {
   productName: string;
   quantity: number;
   unitPrice: number;
-  totalPrice: number;
+  totalPrice?: number;
 }
 
 export interface Event {
@@ -66,9 +73,12 @@ export interface Event {
   location: string;
   organizer: string;
   image?: string;
+  category?: string; // Added category property
+  price?: number; // Added price property
   status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
   attendees?: number;
   isBooked?: boolean;
+  isRegistered?: boolean;
 }
 
 export interface Notification {
@@ -83,12 +93,20 @@ export interface Notification {
 export interface DashboardStats {
   totalProducts: number;
   lowStockItems: number;
-  totalSales: number;
+  totalSales?: number;
   pendingOrders: number;
   upcomingEvents: number;
-  monthlySales: MonthlySales[];
-  topSellingProducts: TopSellingProduct[];
-  recentOrders: Order[];
+  monthlySales?: MonthlySales[];
+  topSellingProducts?: TopSellingProduct[];
+  recentOrders?: Order[];
+  topProducts?: { // Added topProducts property
+    name: string;
+    quantity: number;
+  }[];
+  recentSales?: { // Added recentSales property
+    amount: number;
+    change: number;
+  };
 }
 
 export interface MonthlySales {

@@ -1,37 +1,9 @@
-// types.ts (or wherever you define shared types)
-export interface OrderItem {
-    productId: string;
-    productName: string;
-    quantity: number;
-    unitPrice: number;
-  }
-  
-  export enum OrderStatus {
-    New = 'new',
-    Pending = 'pending',
-    Processing = 'processing',
-    Shipped = 'shipped',
-    Delivered = 'delivered',
-  }
-  
-  export interface Order {
-    id: string;
-    supplierId: string;
-    supplierName: string;
-    status: OrderStatus;
-    items: OrderItem[];
-    totalAmount: number;
-    orderDate: string;
-    expectedDelivery?: string;
-    trackingNumber?: string;
-  }
-  
-  // Extended Order type with businessName for supplier view
-  export interface SupplierOrder extends Order {
-    businessName: string;
-  }
-// supplierOrders.ts
-import { SupplierOrder, OrderStatus } from '@/types';
+import { Order } from '@/types';
+
+// Extended Order type with businessName for supplier view
+export interface SupplierOrder extends Order {
+  businessName: string;
+}
 
 export const supplierOrders: SupplierOrder[] = [
   {
@@ -39,7 +11,7 @@ export const supplierOrders: SupplierOrder[] = [
     supplierId: 's1',
     supplierName: 'Global Coffee Suppliers',
     businessName: "Mostafa's Gourmet Market",
-    status: OrderStatus.New,
+    status: 'new',
     items: [
       {
         productId: 'p1',
@@ -56,13 +28,15 @@ export const supplierOrders: SupplierOrder[] = [
     ],
     totalAmount: 1244.55,
     orderDate: '2023-10-15',
+    createdAt: '2023-10-15',
+    updatedAt: '2023-10-15',
   },
   {
     id: 'so2',
     supplierId: 's1',
     supplierName: 'Global Coffee Suppliers',
     businessName: 'Artisan Cafe',
-    status: OrderStatus.Pending,
+    status: 'pending',
     items: [
       {
         productId: 'p1',
@@ -73,13 +47,15 @@ export const supplierOrders: SupplierOrder[] = [
     ],
     totalAmount: 624.75,
     orderDate: '2023-10-14',
+    createdAt: '2023-10-14',
+    updatedAt: '2023-10-14',
   },
   {
     id: 'so3',
     supplierId: 's1',
     supplierName: 'Global Coffee Suppliers',
     businessName: 'Urban Brews',
-    status: OrderStatus.Processing,
+    status: 'processing',
     items: [
       {
         productId: 'p1',
@@ -97,13 +73,15 @@ export const supplierOrders: SupplierOrder[] = [
     totalAmount: 1659.40,
     orderDate: '2023-10-12',
     expectedDelivery: '2023-10-19',
+    createdAt: '2023-10-12',
+    updatedAt: '2023-10-12',
   },
   {
     id: 'so4',
     supplierId: 's1',
     supplierName: 'Global Coffee Suppliers',
     businessName: 'Coffee Corner',
-    status: OrderStatus.Shipped,
+    status: 'shipped',
     items: [
       {
         productId: 'p1',
@@ -115,14 +93,16 @@ export const supplierOrders: SupplierOrder[] = [
     totalAmount: 874.65,
     orderDate: '2023-10-10',
     expectedDelivery: '2023-10-17',
-    trackingNumber: 'GCS-87654321'
+    trackingNumber: 'GCS-87654321',
+    createdAt: '2023-10-10',
+    updatedAt: '2023-10-10',
   },
   {
     id: 'so5',
     supplierId: 's1',
     supplierName: 'Global Coffee Suppliers',
     businessName: 'Morning Brew Cafe',
-    status: OrderStatus.Delivered,
+    status: 'delivered',
     items: [
       {
         productId: 'p1',
@@ -140,14 +120,16 @@ export const supplierOrders: SupplierOrder[] = [
     totalAmount: 829.70,
     orderDate: '2023-10-05',
     expectedDelivery: '2023-10-12',
-    trackingNumber: 'GCS-12345678'
+    trackingNumber: 'GCS-12345678',
+    createdAt: '2023-10-05',
+    updatedAt: '2023-10-05',
   },
   {
     id: 'so6',
     supplierId: 's1',
     supplierName: 'Global Coffee Suppliers',
     businessName: 'Bean & Leaf',
-    status: OrderStatus.New,
+    status: 'new',
     items: [
       {
         productId: 'p7',
@@ -158,6 +140,7 @@ export const supplierOrders: SupplierOrder[] = [
     ],
     totalAmount: 824.75,
     orderDate: '2023-10-15',
+    createdAt: '2023-10-15',
+    updatedAt: '2023-10-15',
   }
 ];
-  

@@ -23,9 +23,12 @@ export default function DashboardScreen() {
 
   // Simple bar chart component
   const BarChart = () => {
+    // Make sure topProducts exists before using it
+    const topProducts = dashboardStats.topProducts || [];
+    
     return (
       <View style={styles.barChartContainer}>
-        {dashboardStats.topProducts.map((product, index) => (
+        {topProducts.map((product, index) => (
           <View key={index} style={styles.barChartItem}>
             <Text style={styles.barChartLabel} numberOfLines={1}>{product.name}</Text>
             <View style={styles.barContainer}>
@@ -33,7 +36,7 @@ export default function DashboardScreen() {
                 style={[
                   styles.bar, 
                   { 
-                    width: `${(product.quantity / Math.max(...dashboardStats.topProducts.map(p => p.quantity))) * 100}%`,
+                    width: `${(product.quantity / Math.max(...topProducts.map(p => p.quantity))) * 100}%`,
                     backgroundColor: index === 0 
                       ? Colors.primary.burgundy 
                       : index === 1 
@@ -74,9 +77,9 @@ export default function DashboardScreen() {
     }
   };
 
-  // HIGHLIGHT: Added navigation handlers for dashboard cards
+  // Navigation handlers for dashboard cards
   const handleTotalProducts = () => {
-    router.push('/inventory');
+    router.push('/total-products');
   };
 
   const handleLowStockItems = () => {
@@ -104,7 +107,6 @@ export default function DashboardScreen() {
             <Text style={styles.greeting}>Hello, {user?.name}</Text>
             <Text style={styles.businessName}>{user?.businessName || 'Your Business'}</Text>
           </View>
-          {/* HIGHLIGHT: Removed add button from business owner dashboard */}
         </View>
 
         <View style={styles.statsContainer}>
@@ -138,33 +140,61 @@ export default function DashboardScreen() {
           />
         </View>
 
-        <View style={styles.salesContainer}>
-          <View style={styles.salesHeader}>
-            <Text style={styles.salesTitle}>Recent Sales</Text>
-            <View style={styles.salesChange}>
-              <TrendingUp size={16} color={dashboardStats.recentSales.change > 0 ? Colors.status.success : Colors.status.error} />
-              <Text style={[
-                styles.salesChangeText,
-                { color: dashboardStats.recentSales.change > 0 ? Colors.status.success : Colors.status.error }
-              ]}>
-                {dashboardStats.recentSales.change > 0 ? '+' : ''}{dashboardStats.recentSales.change}%
-              </Text>
+        {dashboardStats.recentSales && (
+          <View style={styles.salesContainer}>
+            <View style={styles.salesHeader}>
+              <Text style={styles.salesTitle}>Recent Sales</Text>
+              <View style={styles.salesChange}>
+                <TrendingUp size={16} color={dashboardStats.recentSales.change > 0 ? Colors.status.success : Colors.status.error} />
+                <Text style={[
+                  styles.salesChangeText,
+                  { color: dashboardStats.recentSales.change > 0 ? Colors.status.success : Colors.status.error }
+                ]}>
+                  {dashboardStats.recentSales.change > 0 ? '+' : ''}{dashboardStats.recentSales.change}%
+                </Text>
+              </View>
             </View>
+            <Text style={styles.salesAmount}>${dashboardStats.recentSales.amount.toLocaleString()}</Text>
+            
+            {/* Added View Sales Report button */}
+            <TouchableOpacity 
+              style={styles.viewReportButton}
+              onPress={() => router.push('/sales-report')}
+            >
+              <Text style={styles.viewReportText}>View Sales Report</Text>
+            </TouchableOpacity>
           </View>
-          <Text style={styles.salesAmount}>${dashboardStats.recentSales.amount.toLocaleString()}</Text>
+        )}
+
+        {dashboardStats.topProducts && dashboardStats.topProducts.length > 0 && (
+          <ChartCard title="Top Selling Products">
+            <BarChart />
+          </ChartCard>
+        )}
+
+        {/* Low Stock Items Section */}
+        <View style={styles.lowStockContainer}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Low Stock Items</Text>
+            <TouchableOpacity onPress={() => router.push('/low-stock-items')}>
+              <Text style={styles.seeAllText}>See All</Text>
+            </TouchableOpacity>
+          </View>
           
-          {/* Added View Sales Report button */}
+          <View style={styles.lowStockAlert}>
+            <AlertTriangle size={20} color={Colors.status.warning} style={styles.lowStockIcon} />
+            <Text style={styles.lowStockText}>
+              {dashboardStats.lowStockItems} items are below minimum stock level
+            </Text>
+          </View>
+          
           <TouchableOpacity 
-            style={styles.viewReportButton}
-            onPress={() => router.push('/sales-report')}
+            style={styles.lowStockButton}
+            onPress={() => router.push('/low-stock-items')}
           >
-            <Text style={styles.viewReportText}>View Sales Report</Text>
+            <Text style={styles.lowStockButtonText}>View Low Stock Items</Text>
           </TouchableOpacity>
         </View>
-
-        <ChartCard title="Top Selling Products">
-          <BarChart />
-        </ChartCard>
 
         {upcomingEvents.length > 0 && (
           <View style={styles.upcomingEventsContainer}>
@@ -241,8 +271,6 @@ export default function DashboardScreen() {
               </View>
               <Text style={styles.quickActionText}>Sales Report</Text>
             </TouchableOpacity>
-            
-            {/* HIGHLIGHT: Removed Add Event button from quick actions */}
           </View>
         </View>
       </ScrollView>
@@ -356,6 +384,46 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: Colors.neutral.darkGray,
   },
+  lowStockContainer: {
+    backgroundColor: Colors.neutral.white,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 24,
+    shadowColor: Colors.neutral.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  lowStockAlert: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.status.warningLight,
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  lowStockIcon: {
+    marginRight: 8,
+  },
+  lowStockText: {
+    fontSize: 14,
+    color: Colors.neutral.darkGray,
+    flex: 1,
+  },
+  lowStockButton: {
+    backgroundColor: Colors.status.warning + '20',
+    borderWidth: 1,
+    borderColor: Colors.status.warning,
+    borderRadius: 8,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  lowStockButtonText: {
+    color: Colors.status.warning,
+    fontSize: 14,
+    fontWeight: '500',
+  },
   upcomingEventsContainer: {
     marginBottom: 24,
   },
@@ -433,7 +501,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   quickActionButton: {
-    width: '31%', // HIGHLIGHT: Changed from 48% to 31% for 3 items instead of 4
+    width: '31%', // For 3 items instead of 4
     backgroundColor: Colors.neutral.white,
     borderRadius: 12,
     padding: 16,

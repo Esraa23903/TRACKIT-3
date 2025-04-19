@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Switch, TouchableOpacity, ScrollView } from 're
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
 import Colors from '@/constants/colors';
-import { ArrowLeft, Bell, ShoppingCart, Truck, AlertTriangle, Tag, Calendar } from 'lucide-react-native';
+import { ArrowLeft, Bell, ShoppingCart, Truck, AlertTriangle, Tag, Calendar, Mail } from 'lucide-react-native';
 
 export default function NotificationsScreen() {
   const router = useRouter();

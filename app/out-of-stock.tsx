@@ -7,13 +7,11 @@ import { ArrowLeft, AlertTriangle, Package, ShoppingCart } from 'lucide-react-na
 import { products } from '@/mocks/products';
 import { Product } from '@/types';
 
-export default function LowStockItemsScreen() {
+export default function OutOfStockScreen() {
   const router = useRouter();
   
-  // Filter products with low stock
-  const lowStockProducts = products.filter(product => 
-    product.quantity < product.minStockLevel && product.quantity > 0
-  );
+  // Filter products that are out of stock
+  const outOfStockProducts = products.filter(product => product.quantity <= 0);
 
   const handleProductPress = (product: Product) => {
     router.push({
@@ -50,34 +48,32 @@ export default function LowStockItemsScreen() {
         <View style={styles.productNameContainer}>
           <Text style={styles.productName} numberOfLines={1}>{item.name}</Text>
           <View style={styles.stockBadge}>
-            <Text style={styles.stockBadgeText}>Low Stock</Text>
+            <Text style={styles.stockBadgeText}>Out of Stock</Text>
           </View>
         </View>
         
         <Text style={styles.productSku}>SKU: {item.sku}</Text>
         
-        <View style={styles.stockInfo}>
-          <View style={styles.stockLevel}>
-            <Text style={styles.stockLabel}>Current Stock:</Text>
-            <Text style={styles.stockValue}>{item.quantity}</Text>
+        <View style={styles.productDetails}>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Price:</Text>
+            <Text style={styles.detailValue}>${item.price.toFixed(2)}</Text>
           </View>
           
-          <View style={styles.stockLevel}>
-            <Text style={styles.stockLabel}>Min Level:</Text>
-            <Text style={styles.stockValue}>{item.minStockLevel}</Text>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Category:</Text>
+            <Text style={styles.detailValue}>{item.category}</Text>
+          </View>
+          
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Supplier:</Text>
+            <Text style={styles.detailValue}>{item.supplier || 'Not specified'}</Text>
           </View>
         </View>
         
-        <View style={styles.progressBarContainer}>
-          <View 
-            style={[
-              styles.progressBar, 
-              { 
-                width: `${(item.quantity / item.minStockLevel) * 100}%`,
-                backgroundColor: getStockLevelColor(item.quantity, item.minStockLevel)
-              }
-            ]} 
-          />
+        <View style={styles.urgentLabel}>
+          <AlertTriangle size={16} color={Colors.status.error} style={styles.urgentIcon} />
+          <Text style={styles.urgentText}>Urgent: Restock Required</Text>
         </View>
       </View>
       
@@ -100,19 +96,12 @@ export default function LowStockItemsScreen() {
       </View>
     </View>
   );
-  
-  const getStockLevelColor = (current: number, min: number) => {
-    const ratio = current / min;
-    if (ratio < 0.3) return Colors.status.error;
-    if (ratio < 0.7) return Colors.status.warning;
-    return Colors.status.success;
-  };
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
       <Stack.Screen 
         options={{
-          title: 'Low Stock Items',
+          title: 'Out of Stock Items',
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <ArrowLeft size={24} color={Colors.neutral.black} />
@@ -123,24 +112,24 @@ export default function LowStockItemsScreen() {
 
       <View style={styles.header}>
         <View style={styles.warningBanner}>
-          <AlertTriangle size={20} color={Colors.status.warning} />
+          <AlertTriangle size={20} color={Colors.status.error} />
           <Text style={styles.warningText}>
-            {lowStockProducts.length} products below minimum stock level
+            {outOfStockProducts.length} products are out of stock
           </Text>
         </View>
       </View>
 
       <FlatList
-        data={lowStockProducts}
+        data={outOfStockProducts}
         renderItem={renderProductItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={() => (
           <View style={styles.emptyContainer}>
-            <AlertTriangle size={48} color={Colors.neutral.lightGray} />
-            <Text style={styles.emptyText}>No Low Stock Items</Text>
-            <Text style={styles.emptySubtext}>All your products are above minimum stock levels</Text>
+            <Package size={48} color={Colors.neutral.lightGray} />
+            <Text style={styles.emptyText}>No Out of Stock Items</Text>
+            <Text style={styles.emptySubtext}>All your products have inventory available</Text>
           </View>
         )}
       />
@@ -168,7 +157,7 @@ const styles = StyleSheet.create({
   warningBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.status.warning + '20',
+    backgroundColor: Colors.status.error + '20',
     padding: 12,
     borderRadius: 8,
   },
@@ -192,6 +181,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
+    borderLeftWidth: 4,
+    borderLeftColor: Colors.status.error,
   },
   productInfo: {
     marginBottom: 16,
@@ -209,7 +200,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   stockBadge: {
-    backgroundColor: Colors.status.warning + '20',
+    backgroundColor: Colors.status.error + '20',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
@@ -217,7 +208,7 @@ const styles = StyleSheet.create({
   },
   stockBadgeText: {
     fontSize: 12,
-    color: Colors.status.warning,
+    color: Colors.status.error,
     fontWeight: '500',
   },
   productSku: {
@@ -225,32 +216,43 @@ const styles = StyleSheet.create({
     color: Colors.neutral.gray,
     marginBottom: 12,
   },
-  stockInfo: {
+  productDetails: {
     flexDirection: 'row',
-    marginBottom: 8,
+    flexWrap: 'wrap',
+    marginBottom: 12,
   },
-  stockLevel: {
+  detailItem: {
     flexDirection: 'row',
     marginRight: 16,
+    marginBottom: 4,
+    minWidth: '40%',
   },
-  stockLabel: {
+  detailLabel: {
     fontSize: 14,
     color: Colors.neutral.darkGray,
     marginRight: 4,
   },
-  stockValue: {
+  detailValue: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '500',
     color: Colors.neutral.black,
   },
-  progressBarContainer: {
-    height: 8,
-    backgroundColor: Colors.neutral.extraLightGray,
+  urgentLabel: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.status.error + '10',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
     borderRadius: 4,
-    overflow: 'hidden',
+    alignSelf: 'flex-start',
   },
-  progressBar: {
-    height: '100%',
+  urgentIcon: {
+    marginRight: 6,
+  },
+  urgentText: {
+    fontSize: 12,
+    color: Colors.status.error,
+    fontWeight: '500',
   },
   productActions: {
     flexDirection: 'row',

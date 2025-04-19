@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
 import Colors from '@/constants/colors';
 import { useAuthStore } from '@/store/auth-store';
-import { ArrowLeft, User, Mail, Building, Camera, X } from 'lucide-react-native';
+import { ArrowLeft, User, Mail as MailIcon, Building, Camera } from 'lucide-react-native';
 
 export default function PersonalInformationScreen() {
   const router = useRouter();
@@ -80,7 +80,7 @@ export default function PersonalInformationScreen() {
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>Email</Text>
             <View style={styles.inputContainer}>
-              <Mail size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
+              <MailIcon size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
                 placeholder="Enter your email"

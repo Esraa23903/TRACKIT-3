@@ -8,13 +8,15 @@ export const products: Product[] = [
     description: 'High-quality Arabica coffee beans from Colombia',
     category: 'Beverages',
     price: 24.99,
+    cost: 15.50,
     quantity: 45,
     minStockLevel: 20,
     supplierId: 's1',
-    supplierName: 'Global Coffee Suppliers',
+    supplier: 'Global Coffee Suppliers',
     image: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e',
-    expiryDate: '2024-12-15',
-    lastUpdated: '2023-10-05'
+    barcode: '890123456789',
+    createdAt: '2023-09-15',
+    updatedAt: '2023-10-05'
   },
   {
     id: 'p2',
@@ -23,13 +25,15 @@ export const products: Product[] = [
     description: 'Organic all-purpose flour, perfect for baking',
     category: 'Baking',
     price: 8.99,
+    cost: 4.25,
     quantity: 12,
     minStockLevel: 15,
     supplierId: 's2',
-    supplierName: 'Organic Essentials',
+    supplier: 'Organic Essentials',
     image: 'https://images.unsplash.com/photo-1603569283847-aa295f0d016a',
-    expiryDate: '2024-06-20',
-    lastUpdated: '2023-10-10'
+    barcode: '890123456790',
+    createdAt: '2023-09-18',
+    updatedAt: '2023-10-10'
   },
   {
     id: 'p3',
@@ -38,12 +42,15 @@ export const products: Product[] = [
     description: 'Premium 24-piece stainless steel cutlery set',
     category: 'Kitchen',
     price: 89.99,
+    cost: 45.00,
     quantity: 8,
     minStockLevel: 5,
     supplierId: 's3',
-    supplierName: 'Kitchen Essentials Co.',
+    supplier: 'Kitchen Essentials Co.',
     image: 'https://images.unsplash.com/photo-1590794056226-79ef3a8147e1',
-    lastUpdated: '2023-09-28'
+    barcode: '890123456791',
+    createdAt: '2023-09-10',
+    updatedAt: '2023-09-28'
   },
   {
     id: 'p4',
@@ -52,13 +59,15 @@ export const products: Product[] = [
     description: 'Handcrafted dark chocolate bars with sea salt',
     category: 'Confectionery',
     price: 12.50,
+    cost: 6.75,
     quantity: 32,
     minStockLevel: 20,
     supplierId: 's4',
-    supplierName: 'Sweet Delights',
+    supplier: 'Sweet Delights',
     image: 'https://images.unsplash.com/photo-1549007994-cb92caebd54b',
-    expiryDate: '2024-05-10',
-    lastUpdated: '2023-10-12'
+    barcode: '890123456792',
+    createdAt: '2023-09-20',
+    updatedAt: '2023-10-12'
   },
   {
     id: 'p5',
@@ -67,13 +76,15 @@ export const products: Product[] = [
     description: 'Extra virgin olive oil from Italian olives',
     category: 'Cooking',
     price: 18.75,
+    cost: 10.25,
     quantity: 15,
     minStockLevel: 10,
     supplierId: 's2',
-    supplierName: 'Organic Essentials',
+    supplier: 'Organic Essentials',
     image: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5',
-    expiryDate: '2024-08-30',
-    lastUpdated: '2023-10-01'
+    barcode: '890123456793',
+    createdAt: '2023-09-05',
+    updatedAt: '2023-10-01'
   },
   {
     id: 'p6',
@@ -82,12 +93,15 @@ export const products: Product[] = [
     description: 'Set of 6 handmade ceramic dinner plates',
     category: 'Dining',
     price: 65.00,
+    cost: 32.50,
     quantity: 4,
     minStockLevel: 8,
     supplierId: 's3',
-    supplierName: 'Kitchen Essentials Co.',
+    supplier: 'Kitchen Essentials Co.',
     image: 'https://images.unsplash.com/photo-1578079957245-8d6f6e3a5b9b',
-    lastUpdated: '2023-09-15'
+    barcode: '890123456794',
+    createdAt: '2023-08-25',
+    updatedAt: '2023-09-15'
   },
   {
     id: 'p7',
@@ -96,13 +110,15 @@ export const products: Product[] = [
     description: 'Assorted specialty teas from around the world',
     category: 'Beverages',
     price: 32.99,
+    cost: 18.50,
     quantity: 18,
     minStockLevel: 12,
     supplierId: 's1',
-    supplierName: 'Global Coffee Suppliers',
+    supplier: 'Global Coffee Suppliers',
     image: 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9',
-    expiryDate: '2024-11-05',
-    lastUpdated: '2023-10-08'
+    barcode: '890123456795',
+    createdAt: '2023-09-12',
+    updatedAt: '2023-10-08'
   },
   {
     id: 'p8',
@@ -111,12 +127,14 @@ export const products: Product[] = [
     description: 'Collection of 12 premium spices in glass jars',
     category: 'Cooking',
     price: 45.50,
+    cost: 22.75,
     quantity: 7,
     minStockLevel: 5,
     supplierId: 's5',
-    supplierName: 'Spice Traders',
+    supplier: 'Spice Traders',
     image: 'https://images.unsplash.com/photo-1532336414038-cf19250c5757',
-    expiryDate: '2025-01-15',
-    lastUpdated: '2023-09-20'
+    barcode: '890123456796',
+    createdAt: '2023-08-30',
+    updatedAt: '2023-09-20'
   }
 ];

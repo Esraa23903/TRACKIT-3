@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
 import Colors from '@/constants/colors';
 import { orders } from '@/mocks/orders';
-import { OrderCard } from '@/components/OrderCard';
+import OrderCard from '@/components/OrderCard'; // Fixed import statement
 import { ArrowLeft, ShoppingCart } from 'lucide-react-native';
 
 // HIGHLIGHT: New screen for pending orders

@@ -7,11 +7,14 @@ interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  isInitialized: boolean; // New flag to track if auth has been initialized
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   signup: (userData: Partial<User>, password: string) => Promise<void>;
   // Added function to check permissions
   hasPermission: (permission: string) => boolean;
+  // Initialize auth state
+  initAuth: () => Promise<void>;
 }
 
 // Define permissions for different user types
@@ -80,6 +83,13 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       isAuthenticated: false,
       isLoading: false,
+      isInitialized: false, // Start as not initialized
+      
+      // Initialize auth state - called when app starts
+      initAuth: async () => {
+        // This will be called after hydration from storage
+        set({ isInitialized: true });
+      },
       
       login: async (email: string, password: string) => {
         set({ isLoading: true });
@@ -151,7 +161,13 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
-      storage: createJSONStorage(() => AsyncStorage)
+      storage: createJSONStorage(() => AsyncStorage),
+      onRehydrateStorage: () => (state) => {
+        // When storage is rehydrated, we need to initialize auth
+        if (state) {
+          state.initAuth();
+        }
+      }
     }
   )
 );

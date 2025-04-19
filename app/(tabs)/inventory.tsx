@@ -50,7 +50,7 @@ export default function InventoryScreen() {
     Alert.alert('Filter', 'Filter functionality to be implemented');
   };
 
-  // HIGHLIGHT: Added barcode scanning functionality
+  // Added barcode scanning functionality
   const handleScanBarcode = () => {
     if (!hasPermission('scan_barcode')) {
       Alert.alert('Permission Denied', 'You do not have permission to scan barcodes');
@@ -84,11 +84,8 @@ export default function InventoryScreen() {
                   {
                     text: 'View Product',
                     onPress: () => {
-                      // Navigate to product details
-                      router.push({
-                        pathname: '/product-details',
-                        params: { id: 'p1' }
-                      });
+                      // Navigate to product details - Fixed syntax error here
+                      router.push('/product-details?id=p1');
                     }
                   },
                   {
@@ -113,10 +110,21 @@ export default function InventoryScreen() {
   };
 
   const handleProductPress = (product: Product) => {
-    router.push({
-      pathname: '/product-details',
-      params: { id: product.id }
-    });
+    // Fixed syntax error here
+    router.push(`/product-details?id=${product.id}`);
+  };
+  
+  // Navigation handlers for inventory categories
+  const handleViewTotalProducts = () => {
+    router.push('/total-products');
+  };
+  
+  const handleViewLowStock = () => {
+    router.push('/low-stock-items');
+  };
+  
+  const handleViewOutOfStock = () => {
+    router.push('/out-of-stock');
   };
 
   return (
@@ -140,7 +148,7 @@ export default function InventoryScreen() {
         </View>
         
         <View style={styles.actionButtons}>
-          {/* HIGHLIGHT: Added barcode scanner button */}
+          {/* Added barcode scanner button */}
           <TouchableOpacity style={styles.actionButton} onPress={handleScanBarcode}>
             <ScanBarcode size={20} color={Colors.neutral.gray} />
           </TouchableOpacity>
@@ -156,25 +164,34 @@ export default function InventoryScreen() {
       </View>
 
       <View style={styles.statsContainer}>
-        <View style={styles.statCard}>
+        <TouchableOpacity 
+          style={styles.statCard}
+          onPress={handleViewTotalProducts}
+        >
           <View style={[styles.statIconContainer, { backgroundColor: Colors.primary.burgundy + '20' }]}>
             <Package size={24} color={Colors.primary.burgundy} />
           </View>
           <Text style={styles.statValue}>{products.length}</Text>
           <Text style={styles.statLabel}>Total Products</Text>
-        </View>
+        </TouchableOpacity>
         
-        <View style={styles.statCard}>
+        <TouchableOpacity 
+          style={styles.statCard}
+          onPress={handleViewLowStock}
+        >
           <View style={[styles.statIconContainer, { backgroundColor: Colors.status.warning + '20' }]}>
             <Package size={24} color={Colors.status.warning} />
           </View>
           <Text style={styles.statValue}>
-            {products.filter(p => p.quantity < p.minStockLevel).length}
+            {products.filter(p => p.quantity < p.minStockLevel && p.quantity > 0).length}
           </Text>
           <Text style={styles.statLabel}>Low Stock</Text>
-        </View>
+        </TouchableOpacity>
         
-        <View style={styles.statCard}>
+        <TouchableOpacity 
+          style={styles.statCard}
+          onPress={handleViewOutOfStock}
+        >
           <View style={[styles.statIconContainer, { backgroundColor: Colors.status.error + '20' }]}>
             <Package size={24} color={Colors.status.error} />
           </View>
@@ -182,13 +199,13 @@ export default function InventoryScreen() {
             {products.filter(p => p.quantity === 0).length}
           </Text>
           <Text style={styles.statLabel}>Out of Stock</Text>
-        </View>
+        </TouchableOpacity>
       </View>
 
       <FlatList
         data={filteredProducts}
         renderItem={({ item }) => (
-          <ProductCard product={item} onPress={() => handleProductPress(item)} />
+          <ProductCard product={item} onPress={handleProductPress} />
         )}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.productList}

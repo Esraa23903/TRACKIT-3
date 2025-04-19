@@ -1,200 +1,160 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter, useLocalSearchParams } from 'expo-router';
-import Colors from '@/constants/colors';
-import { ArrowLeft, User, Phone, MapPin, Briefcase, ChevronDown } from 'lucide-react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useAuthStore } from '@/store/auth-store';
+import Colors from '@/constants/colors';
+import { ArrowLeft, Building2, MapPin, Phone } from 'lucide-react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function BusinessInfoScreen() {
   const router = useRouter();
-  const { user } = useAuthStore();
-  const userType = user?.userType || 'business';
+  const { signup, isLoading } = useAuthStore();
   
-  const [formData, setFormData] = useState({
-    ownerName: '',
-    phoneNumber: '',
-    address: '',
-    businessField: '',
-  });
+  // Get user data from previous screens (in a real app, you'd use a form state manager)
+  const [businessName, setBusinessName] = useState('');
+  const [address, setAddress] = useState('');
+  const [phone, setPhone] = useState('');
   
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [showFieldDropdown, setShowFieldDropdown] = useState(false);
+  // Form validation
+  const [businessNameError, setBusinessNameError] = useState('');
+  const [addressError, setAddressError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
   
-  const businessFields = [
-    'Food & Beverage',
-    'Retail',
-    'Manufacturing',
-    'Technology',
-    'Healthcare',
-    'Education',
-    'Hospitality',
-    'Construction',
-    'Other'
-  ];
-
-  const handleInputChange = (field: string, value: string) => {
-    setFormData({
-      ...formData,
-      [field]: value,
-    });
+  // Get user data from previous screens (in a real app, you'd use a form state manager or route params)
+  const userType = 'business'; // This would come from the account-type screen
+  const name = 'John Doe'; // This would come from the login-info screen
+  const email = 'john@example.com'; // This would come from the login-info screen
+  
+  const validateBusinessName = (value: string) => {
+    if (!value.trim()) {
+      setBusinessNameError('Business name is required');
+      return false;
+    }
+    setBusinessNameError('');
+    return true;
+  };
+  
+  const validateAddress = (value: string) => {
+    if (!value.trim()) {
+      setAddressError('Address is required');
+      return false;
+    }
+    setAddressError('');
+    return true;
+  };
+  
+  const validatePhone = (value: string) => {
+    const phoneRegex = /^\+?[0-9]{10,15}$/;
+    if (!value.trim()) {
+      setPhoneError('Phone number is required');
+      return false;
+    } else if (!phoneRegex.test(value.replace(/\s/g, ''))) {
+      setPhoneError('Please enter a valid phone number');
+      return false;
+    }
+    setPhoneError('');
+    return true;
+  };
+  
+  const handleSubmit = async () => {
+    const isBusinessNameValid = validateBusinessName(businessName);
+    const isAddressValid = validateAddress(address);
+    const isPhoneValid = validatePhone(phone);
     
-    // Clear error when typing
-    if (errors[field]) {
-      setErrors({
-        ...errors,
-        [field]: '',
-      });
+    if (isBusinessNameValid && isAddressValid && isPhoneValid) {
+      try {
+        // In a real app, you'd collect all user data from previous screens
+        await signup({
+          name,
+          email,
+          businessName,
+          userType,
+          // You might want to store address and phone in a user profile
+        }, 'password123'); // In a real app, you'd get the password from the previous screen
+        
+        // Navigate to the main app
+        router.replace('/(tabs)');
+      } catch (error) {
+        console.error('Signup error:', error);
+      }
     }
   };
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-    
-    if (!formData.ownerName.trim()) {
-      newErrors.ownerName = 'Owner name is required';
-    }
-    
-    if (!formData.phoneNumber.trim()) {
-      newErrors.phoneNumber = 'Phone number is required';
-    } else if (!/^\d{10,15}$/.test(formData.phoneNumber.replace(/\D/g, ''))) {
-      newErrors.phoneNumber = 'Please enter a valid phone number';
-    }
-    
-    if (!formData.address.trim()) {
-      newErrors.address = 'Business address is required';
-    }
-    
-    if (!formData.businessField.trim()) {
-      newErrors.businessField = 'Business field is required';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleBack = () => {
-    router.back();
-  };
-
-  const handleSubmit = () => {
-    if (validateForm()) {
-      // In a real app, you would save this information to your user profile
-      
-      // Go directly to dashboard for all user types
-      router.replace('/(tabs)');
-    }
-  };
-
+  
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardAvoidingView}
-      >
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+          <TouchableOpacity 
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
             <ArrowLeft size={24} color={Colors.neutral.black} />
           </TouchableOpacity>
           <Text style={styles.title}>Business Information</Text>
-          <View style={styles.placeholder} />
         </View>
-
-        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-          <Text style={styles.subtitle}>
-            Please provide additional information about your business
-          </Text>
-
-          <View style={styles.form}>
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Owner Name</Text>
-              <View style={[styles.inputContainer, errors.ownerName ? styles.inputError : null]}>
-                <User size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter owner name"
-                  value={formData.ownerName}
-                  onChangeText={(text) => handleInputChange('ownerName', text)}
-                />
-              </View>
-              {errors.ownerName ? <Text style={styles.errorText}>{errors.ownerName}</Text> : null}
+        
+        <Text style={styles.subtitle}>Tell us about your business</Text>
+        
+        <View style={styles.form}>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Business Name</Text>
+            <View style={styles.inputContainer}>
+              <Building2 size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your business name"
+                value={businessName}
+                onChangeText={setBusinessName}
+                onBlur={() => validateBusinessName(businessName)}
+              />
             </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Phone Number</Text>
-              <View style={[styles.inputContainer, errors.phoneNumber ? styles.inputError : null]}>
-                <Phone size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter phone number"
-                  value={formData.phoneNumber}
-                  onChangeText={(text) => handleInputChange('phoneNumber', text)}
-                  keyboardType="phone-pad"
-                />
-              </View>
-              {errors.phoneNumber ? <Text style={styles.errorText}>{errors.phoneNumber}</Text> : null}
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Business Address</Text>
-              <View style={[styles.inputContainer, errors.address ? styles.inputError : null]}>
-                <MapPin size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter business address"
-                  value={formData.address}
-                  onChangeText={(text) => handleInputChange('address', text)}
-                />
-              </View>
-              {errors.address ? <Text style={styles.errorText}>{errors.address}</Text> : null}
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Business Field</Text>
-              <TouchableOpacity 
-                style={[
-                  styles.dropdownButton, 
-                  errors.businessField ? styles.inputError : null
-                ]}
-                onPress={() => setShowFieldDropdown(!showFieldDropdown)}
-              >
-                <Briefcase size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
-                <Text style={formData.businessField ? styles.dropdownText : styles.dropdownPlaceholder}>
-                  {formData.businessField || "Select business field"}
-                </Text>
-                <ChevronDown size={20} color={Colors.neutral.gray} />
-              </TouchableOpacity>
-              {errors.businessField ? <Text style={styles.errorText}>{errors.businessField}</Text> : null}
-              
-              {showFieldDropdown && (
-                <View style={styles.dropdownMenu}>
-                  {businessFields.map((field) => (
-                    <TouchableOpacity
-                      key={field}
-                      style={styles.dropdownItem}
-                      onPress={() => {
-                        handleInputChange('businessField', field);
-                        setShowFieldDropdown(false);
-                      }}
-                    >
-                      <Text style={styles.dropdownItemText}>{field}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              )}
-            </View>
+            {businessNameError ? <Text style={styles.errorText}>{businessNameError}</Text> : null}
           </View>
-        </ScrollView>
-
-        <View style={styles.footer}>
-          <TouchableOpacity
-            style={styles.submitButton}
-            onPress={handleSubmit}
-          >
-            <Text style={styles.submitButtonText}>Continue</Text>
-          </TouchableOpacity>
+          
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Business Address</Text>
+            <View style={styles.inputContainer}>
+              <MapPin size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your business address"
+                value={address}
+                onChangeText={setAddress}
+                onBlur={() => validateAddress(address)}
+              />
+            </View>
+            {addressError ? <Text style={styles.errorText}>{addressError}</Text> : null}
+          </View>
+          
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Phone Number</Text>
+            <View style={styles.inputContainer}>
+              <Phone size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your phone number"
+                value={phone}
+                onChangeText={setPhone}
+                keyboardType="phone-pad"
+                onBlur={() => validatePhone(phone)}
+              />
+            </View>
+            {phoneError ? <Text style={styles.errorText}>{phoneError}</Text> : null}
+          </View>
         </View>
-      </KeyboardAvoidingView>
+        
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={handleSubmit}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <ActivityIndicator color={Colors.neutral.white} />
+          ) : (
+            <Text style={styles.submitButtonText}>Complete Registration</Text>
+          )}
+        </TouchableOpacity>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -204,47 +164,38 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.neutral.white,
   },
-  keyboardAvoidingView: {
-    flex: 1,
+  scrollView: {
+    flexGrow: 1,
+    padding: 24,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 16,
-    paddingTop: 8,
+    marginBottom: 32,
   },
   backButton: {
-    padding: 8,
+    marginRight: 16,
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     color: Colors.neutral.black,
-  },
-  placeholder: {
-    width: 40,
-  },
-  scrollView: {
-    flex: 1,
-    padding: 24,
-    paddingTop: 0,
   },
   subtitle: {
     fontSize: 16,
     color: Colors.neutral.gray,
-    marginBottom: 24,
-    textAlign: 'center',
+    marginBottom: 32,
   },
   form: {
-    marginBottom: 24,
+    marginBottom: 32,
   },
   inputGroup: {
-    marginBottom: 16,
+    marginBottom: 24,
   },
-  inputLabel: {
+  label: {
     fontSize: 14,
-    color: Colors.neutral.gray,
+    fontWeight: '600',
+    color: Colors.neutral.darkGray,
     marginBottom: 8,
   },
   inputContainer: {
@@ -255,10 +206,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 16,
     height: 56,
-    backgroundColor: Colors.neutral.white,
-  },
-  inputError: {
-    borderColor: Colors.status.error,
   },
   inputIcon: {
     marginRight: 12,
@@ -269,65 +216,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.neutral.black,
   },
-  dropdownButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: Colors.neutral.extraLightGray,
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    height: 56,
-    backgroundColor: Colors.neutral.white,
-  },
-  dropdownText: {
-    flex: 1,
-    fontSize: 16,
-    color: Colors.neutral.black,
-  },
-  dropdownPlaceholder: {
-    flex: 1,
-    fontSize: 16,
-    color: Colors.neutral.gray,
-  },
-  dropdownMenu: {
-    backgroundColor: Colors.neutral.white,
-    borderRadius: 12,
-    marginTop: 4,
-    borderWidth: 1,
-    borderColor: Colors.neutral.extraLightGray,
-    maxHeight: 200,
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.neutral.black,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 2,
-      },
-    }),
-  },
-  dropdownItem: {
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.neutral.extraLightGray,
-  },
-  dropdownItemText: {
-    fontSize: 16,
-    color: Colors.neutral.black,
-  },
   errorText: {
     color: Colors.status.error,
     fontSize: 14,
-    marginTop: 4,
+    marginTop: 8,
     marginLeft: 4,
-  },
-  footer: {
-    padding: 24,
-    paddingTop: 0,
-    borderTopWidth: 1,
-    borderTopColor: Colors.neutral.extraLightGray,
   },
   submitButton: {
     backgroundColor: Colors.primary.burgundy,

@@ -11,7 +11,8 @@ export const events: Event[] = [
     organizer: 'F&B Industry Association',
     category: 'Trade Show',
     image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87',
-    price: 75.00
+    price: 75.00,
+    status: 'upcoming'
   },
   {
     id: 'e2',
@@ -24,7 +25,8 @@ export const events: Event[] = [
     category: 'Workshop',
     image: 'https://images.unsplash.com/photo-1552664730-d307ca884978',
     price: 45.00,
-    isRegistered: true
+    isRegistered: true,
+    status: 'upcoming'
   },
   {
     id: 'e3',
@@ -36,7 +38,8 @@ export const events: Event[] = [
     organizer: 'Restaurant Innovation Group',
     category: 'Conference',
     image: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678',
-    price: 120.00
+    price: 120.00,
+    status: 'upcoming'
   },
   {
     id: 'e4',
@@ -48,7 +51,8 @@ export const events: Event[] = [
     organizer: 'Supply Chain Experts',
     category: 'Training',
     image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40',
-    price: 199.00
+    price: 199.00,
+    status: 'upcoming'
   },
   {
     id: 'e5',
@@ -61,6 +65,78 @@ export const events: Event[] = [
     category: 'Networking',
     image: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1',
     price: 0.00,
-    isRegistered: true
+    isRegistered: true,
+    status: 'upcoming'
+  },
+  // Adding 5 new upcoming events
+  {
+    id: 'e6',
+    title: 'Digital Transformation in Retail',
+    description: 'Explore how digital technologies are reshaping the retail landscape and learn strategies to stay competitive in the evolving market.',
+    date: '2024-04-10',
+    time: '10:00 - 16:00',
+    location: 'Innovation Center, Dubai, UAE',
+    organizer: 'Retail Technology Association',
+    category: 'Conference',
+    image: 'https://images.unsplash.com/photo-1556742031-c6961e8560b0?q=80&w=2070&auto=format&fit=crop',
+    price: 129.99,
+    status: 'upcoming',
+    attendees: 250
+  },
+  {
+    id: 'e7',
+    title: 'Sustainable Packaging Summit',
+    description: 'Join industry leaders to discuss eco-friendly packaging solutions and regulatory compliance for a greener supply chain.',
+    date: '2024-04-25',
+    time: '09:00 - 17:30',
+    location: 'Green Business Center, Cairo, Egypt',
+    organizer: 'Environmental Business Council',
+    category: 'Summit',
+    image: 'https://images.unsplash.com/photo-1605600659873-d808a13e4d2a?q=80&w=2070&auto=format&fit=crop',
+    price: 89.99,
+    status: 'upcoming',
+    attendees: 180
+  },
+  {
+    id: 'e8',
+    title: 'AI in Supply Chain Management',
+    description: 'Discover how artificial intelligence and machine learning are revolutionizing inventory forecasting, logistics, and supply chain optimization.',
+    date: '2024-05-15',
+    time: '10:00 - 15:00',
+    location: 'Tech Park Conference Center, Alexandria, Egypt',
+    organizer: 'AI Business Solutions',
+    category: 'Technology',
+    image: 'https://images.unsplash.com/photo-1531746790731-6c087fecd65a?q=80&w=2006&auto=format&fit=crop',
+    price: 149.99,
+    status: 'upcoming',
+    attendees: 200
+  },
+  {
+    id: 'e9',
+    title: 'Small Business Financing Workshop',
+    description: 'Learn about various financing options available for small businesses, including loans, grants, and venture capital opportunities.',
+    date: '2024-05-28',
+    time: '13:00 - 16:00',
+    location: 'Financial District, Cairo, Egypt',
+    organizer: 'Small Business Development Center',
+    category: 'Workshop',
+    image: 'https://images.unsplash.com/photo-1591696205602-2f950c417cb9?q=80&w=2070&auto=format&fit=crop',
+    price: 0.00,
+    status: 'upcoming',
+    attendees: 75
+  },
+  {
+    id: 'e10',
+    title: 'Global Import/Export Regulations Forum',
+    description: 'Stay updated on international trade regulations, customs procedures, and compliance requirements for businesses engaged in global commerce.',
+    date: '2024-06-12',
+    time: '09:00 - 18:00',
+    location: 'International Trade Center, Cairo, Egypt',
+    organizer: 'Global Trade Association',
+    category: 'Forum',
+    image: 'https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?q=80&w=2070&auto=format&fit=crop',
+    price: 199.99,
+    status: 'upcoming',
+    attendees: 300
   }
 ];
