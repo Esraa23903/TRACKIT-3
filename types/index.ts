@@ -57,6 +57,7 @@ export interface Order {
 }
 
 export interface OrderItem {
+  image: string | undefined;
   productId: string;
   productName: string;
   quantity: number;
