@@ -1,76 +1,87 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useAuthStore } from '@/store/auth-store';
-import Colors from '@/constants/colors';
-import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
+import { useRouter } from "expo-router";
+import { useAuthStore } from "@/store/auth-store";
+import Colors from "@/constants/colors";
+import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
   const router = useRouter();
   const { login, isLoading, isAuthenticated } = useAuthStore();
-  
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      router.replace('/(tabs)');
+      router.replace("/(tabs)");
     }
   }, [isAuthenticated]);
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) {
-      setEmailError('Email is required');
+      setEmailError("Email is required");
       return false;
     } else if (!emailRegex.test(email)) {
-      setEmailError('Please enter a valid email');
+      setEmailError("Please enter a valid email");
       return false;
     }
-    setEmailError('');
+    setEmailError("");
     return true;
   };
 
   const validatePassword = (password: string) => {
     if (!password) {
-      setPasswordError('Password is required');
+      setPasswordError("Password is required");
       return false;
     } else if (password.length < 6) {
-      setPasswordError('Password must be at least 6 characters');
+      setPasswordError("Password must be at least 6 characters");
       return false;
     }
-    setPasswordError('');
+    setPasswordError("");
     return true;
   };
 
   const handleLogin = async () => {
     const isEmailValid = validateEmail(email);
     const isPasswordValid = validatePassword(password);
-    
+
     if (isEmailValid && isPasswordValid) {
       try {
         await login(email, password);
         // No need to navigate here, the useEffect will handle it
       } catch (error) {
-        console.error('Login error:', error);
+        console.error("Login error:", error);
       }
     }
   };
 
   const handleSignUp = () => {
-    router.push('/(auth)/account-type');
+    router.push("/(auth)/account-type");
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardAvoidingView}
       >
         <ScrollView contentContainerStyle={styles.scrollView}>
@@ -84,12 +95,18 @@ export default function LoginScreen() {
               <Text style={styles.logoText}>TrackIt</Text>
             </LinearGradient>
             <Text style={styles.title}>Welcome Back</Text>
-            <Text style={styles.subtitle}>Sign in to continue managing your inventory</Text>
+            <Text style={styles.subtitle}>
+              Sign in to continue managing your inventory
+            </Text>
           </View>
 
           <View style={styles.form}>
             <View style={styles.inputContainer}>
-              <Mail size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
+              <Mail
+                size={20}
+                color={Colors.neutral.gray}
+                style={styles.inputIcon}
+              />
               <TextInput
                 style={styles.input}
                 placeholder="Email"
@@ -100,10 +117,16 @@ export default function LoginScreen() {
                 onBlur={() => validateEmail(email)}
               />
             </View>
-            {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+            {emailError ? (
+              <Text style={styles.errorText}>{emailError}</Text>
+            ) : null}
 
             <View style={styles.inputContainer}>
-              <Lock size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
+              <Lock
+                size={20}
+                color={Colors.neutral.gray}
+                style={styles.inputIcon}
+              />
               <TextInput
                 style={styles.input}
                 placeholder="Password"
@@ -123,7 +146,9 @@ export default function LoginScreen() {
                 )}
               </TouchableOpacity>
             </View>
-            {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
+            {passwordError ? (
+              <Text style={styles.errorText}>{passwordError}</Text>
+            ) : null}
 
             <TouchableOpacity style={styles.forgotPassword}>
               <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
@@ -165,42 +190,42 @@ const styles = StyleSheet.create({
   scrollView: {
     flexGrow: 1,
     padding: 24,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   header: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 40,
   },
   logoBackground: {
     width: 80,
     height: 80,
     borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 24,
   },
   logoText: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.neutral.white,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.neutral.black,
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
     color: Colors.neutral.gray,
-    textAlign: 'center',
+    textAlign: "center",
   },
   form: {
     marginBottom: 24,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
     borderColor: Colors.neutral.extraLightGray,
     borderRadius: 12,
@@ -213,7 +238,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    height: '100%',
+    height: "100%",
     fontSize: 16,
     color: Colors.neutral.black,
   },
@@ -228,7 +253,7 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   forgotPassword: {
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
     marginBottom: 24,
   },
   forgotPasswordText: {
@@ -239,18 +264,18 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary.burgundy,
     borderRadius: 12,
     height: 56,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   loginButtonText: {
     color: Colors.neutral.white,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   footer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   footerText: {
     fontSize: 14,
@@ -259,7 +284,7 @@ const styles = StyleSheet.create({
   },
   signUpText: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.primary.burgundy,
   },
 });

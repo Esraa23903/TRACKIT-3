@@ -1,57 +1,79 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, FlatList } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Stack, useRouter } from 'expo-router';
-import Colors from '@/constants/colors';
-import { ArrowLeft, Search, HelpCircle, MessageCircle, Phone, Mail, ChevronRight, ChevronDown } from 'lucide-react-native';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  TextInput,
+  FlatList,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Stack, useRouter } from "expo-router";
+import Colors from "@/constants/colors";
+import {
+  ArrowLeft,
+  Search,
+  HelpCircle,
+  MessageCircle,
+  Phone,
+  Mail,
+  ChevronRight,
+  ChevronDown,
+} from "lucide-react-native";
 
 // Mock FAQs
 const mockFaqs = [
   {
-    id: '1',
-    question: 'How do I add a new product to my inventory?',
-    answer: 'To add a new product, go to the Inventory tab and tap the + button in the top right corner. Fill in the product details and save.',
-    category: 'Inventory',
+    id: "1",
+    question: "How do I add a new product to my inventory?",
+    answer:
+      "To add a new product, go to the Inventory tab and tap the + button in the top right corner. Fill in the product details and save.",
+    category: "Inventory",
   },
   {
-    id: '2',
-    question: 'How do I track my orders?',
-    answer: 'You can track your orders in the Supply Chain tab. Select an order to view its current status and tracking information.',
-    category: 'Orders',
+    id: "2",
+    question: "How do I track my orders?",
+    answer:
+      "You can track your orders in the Supply Chain tab. Select an order to view its current status and tracking information.",
+    category: "Orders",
   },
   {
-    id: '3',
-    question: 'How do I generate reports?',
-    answer: 'Go to your Profile tab, then select "Reports & Analytics". From there, you can generate various reports about your business performance.',
-    category: 'Reports',
+    id: "3",
+    question: "How do I generate reports?",
+    answer:
+      'Go to your Profile tab, then select "Reports & Analytics". From there, you can generate various reports about your business performance.',
+    category: "Reports",
   },
   {
-    id: '4',
-    question: 'How do I update my payment information?',
-    answer: 'Go to your Profile tab, then select "Payment Methods". You can add, edit, or remove payment methods from this screen.',
-    category: 'Billing',
+    id: "4",
+    question: "How do I update my payment information?",
+    answer:
+      'Go to your Profile tab, then select "Payment Methods". You can add, edit, or remove payment methods from this screen.',
+    category: "Billing",
   },
   {
-    id: '5',
-    question: 'How do I connect with suppliers?',
-    answer: 'In the Supply Chain tab, you can browse available suppliers and send connection requests to establish business relationships.',
-    category: 'Supply Chain',
+    id: "5",
+    question: "How do I connect with suppliers?",
+    answer:
+      "In the Supply Chain tab, you can browse available suppliers and send connection requests to establish business relationships.",
+    category: "Supply Chain",
   },
 ];
 
 export default function HelpCenterScreen() {
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [expandedFaq, setExpandedFaq] = useState<string | null>(null);
   const [filteredFaqs, setFilteredFaqs] = useState(mockFaqs);
-  
+
   const handleSearch = (text: string) => {
     setSearchQuery(text);
-    if (text.trim() === '') {
+    if (text.trim() === "") {
       setFilteredFaqs(mockFaqs);
     } else {
       const filtered = mockFaqs.filter(
-        faq => 
+        (faq) =>
           faq.question.toLowerCase().includes(text.toLowerCase()) ||
           faq.answer.toLowerCase().includes(text.toLowerCase()) ||
           faq.category.toLowerCase().includes(text.toLowerCase())
@@ -66,31 +88,38 @@ export default function HelpCenterScreen() {
 
   const handleContactSupport = () => {
     // In a real app, you would navigate to a contact form or open email/phone
-    alert('Contact support functionality would be implemented here');
+    alert("Contact support functionality would be implemented here");
   };
 
   const handleLiveChat = () => {
     // In a real app, you would open a live chat interface
-    alert('Live chat functionality would be implemented here');
+    alert("Live chat functionality would be implemented here");
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
-      <Stack.Screen 
+    <SafeAreaView style={styles.container} edges={["bottom"]}>
+      <Stack.Screen
         options={{
-          title: 'Help Center',
+          title: "Help Center",
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <ArrowLeft size={24} color={Colors.neutral.black} />
             </TouchableOpacity>
           ),
-        }} 
+        }}
       />
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.searchContainer}>
           <View style={styles.searchInputContainer}>
-            <Search size={20} color={Colors.neutral.gray} style={styles.searchIcon} />
+            <Search
+              size={20}
+              color={Colors.neutral.gray}
+              style={styles.searchIcon}
+            />
             <TextInput
               style={styles.searchInput}
               placeholder="Search for help"
@@ -101,24 +130,48 @@ export default function HelpCenterScreen() {
         </View>
 
         <View style={styles.supportOptions}>
-          <TouchableOpacity style={styles.supportOption} onPress={handleContactSupport}>
-            <View style={[styles.supportIconContainer, { backgroundColor: Colors.primary.burgundyLight }]}>
+          <TouchableOpacity
+            style={styles.supportOption}
+            onPress={handleContactSupport}
+          >
+            <View
+              style={[
+                styles.supportIconContainer,
+                { backgroundColor: Colors.primary.burgundyLight },
+              ]}
+            >
               <Phone size={24} color={Colors.primary.burgundy} />
             </View>
             <Text style={styles.supportOptionText}>Contact Support</Text>
             <ChevronRight size={20} color={Colors.neutral.gray} />
           </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.supportOption} onPress={handleLiveChat}>
-            <View style={[styles.supportIconContainer, { backgroundColor: Colors.status.info + '20' }]}>
+
+          <TouchableOpacity
+            style={styles.supportOption}
+            onPress={handleLiveChat}
+          >
+            <View
+              style={[
+                styles.supportIconContainer,
+                { backgroundColor: Colors.status.info + "20" },
+              ]}
+            >
               <MessageCircle size={24} color={Colors.status.info} />
             </View>
             <Text style={styles.supportOptionText}>Live Chat</Text>
             <ChevronRight size={20} color={Colors.neutral.gray} />
           </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.supportOption} onPress={handleContactSupport}>
-            <View style={[styles.supportIconContainer, { backgroundColor: Colors.status.success + '20' }]}>
+
+          <TouchableOpacity
+            style={styles.supportOption}
+            onPress={handleContactSupport}
+          >
+            <View
+              style={[
+                styles.supportIconContainer,
+                { backgroundColor: Colors.status.success + "20" },
+              ]}
+            >
               <Mail size={24} color={Colors.status.success} />
             </View>
             <Text style={styles.supportOptionText}>Email Support</Text>
@@ -128,15 +181,19 @@ export default function HelpCenterScreen() {
 
         <View style={styles.faqSection}>
           <Text style={styles.sectionTitle}>Frequently Asked Questions</Text>
-          
-          {filteredFaqs.map(faq => (
+
+          {filteredFaqs.map((faq) => (
             <View key={faq.id} style={styles.faqItem}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.faqQuestion}
                 onPress={() => toggleFaq(faq.id)}
               >
                 <View style={styles.faqQuestionContent}>
-                  <HelpCircle size={20} color={Colors.primary.burgundy} style={styles.faqIcon} />
+                  <HelpCircle
+                    size={20}
+                    color={Colors.primary.burgundy}
+                    style={styles.faqIcon}
+                  />
                   <Text style={styles.faqQuestionText}>{faq.question}</Text>
                 </View>
                 {expandedFaq === faq.id ? (
@@ -145,7 +202,7 @@ export default function HelpCenterScreen() {
                   <ChevronRight size={20} color={Colors.neutral.gray} />
                 )}
               </TouchableOpacity>
-              
+
               {expandedFaq === faq.id && (
                 <View style={styles.faqAnswer}>
                   <Text style={styles.faqAnswerText}>{faq.answer}</Text>
@@ -156,12 +213,14 @@ export default function HelpCenterScreen() {
               )}
             </View>
           ))}
-          
+
           {filteredFaqs.length === 0 && (
             <View style={styles.emptyContainer}>
               <HelpCircle size={48} color={Colors.neutral.lightGray} />
               <Text style={styles.emptyText}>No results found</Text>
-              <Text style={styles.emptySubtext}>Try different keywords or contact support</Text>
+              <Text style={styles.emptySubtext}>
+                Try different keywords or contact support
+              </Text>
             </View>
           )}
         </View>
@@ -171,7 +230,7 @@ export default function HelpCenterScreen() {
           <Text style={styles.contactText}>
             Our support team is available Monday-Friday, 9am-5pm EST.
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.contactButton}
             onPress={handleContactSupport}
           >
@@ -196,8 +255,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.neutral.white,
   },
   searchInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: Colors.neutral.extraLightGray,
     borderRadius: 12,
     paddingHorizontal: 12,
@@ -208,7 +267,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    height: '100%',
+    height: "100%",
     fontSize: 16,
     color: Colors.neutral.black,
   },
@@ -217,8 +276,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.neutral.white,
   },
   supportOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: Colors.neutral.white,
     borderRadius: 12,
     padding: 16,
@@ -230,14 +289,14 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: 16,
   },
   supportOptionText: {
     flex: 1,
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
     color: Colors.neutral.black,
   },
   faqSection: {
@@ -246,7 +305,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
     marginBottom: 16,
   },
@@ -256,17 +315,17 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderWidth: 1,
     borderColor: Colors.neutral.extraLightGray,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   faqQuestion: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     padding: 16,
   },
   faqQuestionContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     flex: 1,
     marginRight: 8,
   },
@@ -281,7 +340,7 @@ const styles = StyleSheet.create({
   faqAnswer: {
     padding: 16,
     paddingTop: 0,
-    backgroundColor: Colors.neutral.extraLightGray + '40',
+    backgroundColor: Colors.neutral.extraLightGray + "40",
   },
   faqAnswerText: {
     fontSize: 14,
@@ -290,7 +349,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   faqCategory: {
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     backgroundColor: Colors.neutral.extraLightGray,
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -301,14 +360,14 @@ const styles = StyleSheet.create({
     color: Colors.neutral.gray,
   },
   emptyContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: 24,
     marginTop: 16,
   },
   emptyText: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.darkGray,
     marginTop: 16,
     marginBottom: 8,
@@ -316,25 +375,25 @@ const styles = StyleSheet.create({
   emptySubtext: {
     fontSize: 14,
     color: Colors.neutral.gray,
-    textAlign: 'center',
+    textAlign: "center",
   },
   contactInfo: {
     padding: 24,
     backgroundColor: Colors.neutral.extraLightGray,
     margin: 16,
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
   },
   contactTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
     marginBottom: 8,
   },
   contactText: {
     fontSize: 14,
     color: Colors.neutral.gray,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 16,
   },
   contactButton: {
@@ -346,6 +405,6 @@ const styles = StyleSheet.create({
   contactButtonText: {
     color: Colors.neutral.white,
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
 });

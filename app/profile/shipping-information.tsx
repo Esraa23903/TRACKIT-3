@@ -1,32 +1,46 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Stack, useRouter } from 'expo-router';
-import Colors from '@/constants/colors';
-import { ArrowLeft, MapPin, Plus, Edit2, Trash2, Check } from 'lucide-react-native';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  TextInput,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Stack, useRouter } from "expo-router";
+import Colors from "@/constants/colors";
+import {
+  ArrowLeft,
+  MapPin,
+  Plus,
+  Edit2,
+  Trash2,
+  Check,
+} from "lucide-react-native";
 
 // Mock shipping addresses
 const mockAddresses = [
   {
-    id: '1',
-    name: 'Main Warehouse',
-    street: '123 Business Street, Suite 101',
-    city: 'New York',
-    state: 'NY',
-    zip: '10001',
-    country: 'United States',
+    id: "1",
+    name: "Main Warehouse",
+    street: "123 Business Street, Suite 101",
+    city: "New York",
+    state: "NY",
+    zip: "10001",
+    country: "United States",
     isDefault: true,
   },
   {
-    id: '2',
-    name: 'Secondary Location',
-    street: '456 Commerce Avenue',
-    city: 'Chicago',
-    state: 'IL',
-    zip: '60601',
-    country: 'United States',
+    id: "2",
+    name: "Secondary Location",
+    street: "456 Commerce Avenue",
+    city: "Chicago",
+    state: "IL",
+    zip: "60601",
+    country: "United States",
     isDefault: false,
-  }
+  },
 ];
 
 export default function ShippingInformationScreen() {
@@ -38,13 +52,13 @@ export default function ShippingInformationScreen() {
   const handleAddAddress = () => {
     setCurrentAddress({
       id: `new-${Date.now()}`,
-      name: '',
-      street: '',
-      city: '',
-      state: '',
-      zip: '',
-      country: '',
-      isDefault: addresses.length === 0,
+      name: "",
+      street: "",
+      city: "",
+      state: "",
+      zip: "",
+      country: "",
+      isDefault: Boolean(addresses.length === 0),
     });
     setEditMode(true);
   };
@@ -55,36 +69,49 @@ export default function ShippingInformationScreen() {
   };
 
   const handleDeleteAddress = (id: string) => {
-    setAddresses(addresses.filter(address => address.id !== id));
+    setAddresses(addresses.filter((address) => address.id !== id));
   };
 
   const handleSetDefault = (id: string) => {
-    setAddresses(addresses.map(address => ({
-      ...address,
-      isDefault: address.id === id
-    })));
+    setAddresses(
+      addresses.map((address) => ({
+        ...address,
+        isDefault: address.id === id,
+      }))
+    );
   };
 
   const handleSaveAddress = () => {
-    if (!currentAddress.name || !currentAddress.street || !currentAddress.city || 
-        !currentAddress.state || !currentAddress.zip || !currentAddress.country) {
-      alert('Please fill in all fields');
+    if (
+      !currentAddress.name ||
+      !currentAddress.street ||
+      !currentAddress.city ||
+      !currentAddress.state ||
+      !currentAddress.zip ||
+      !currentAddress.country
+    ) {
+      alert("Please fill in all fields");
       return;
     }
-    
-    if (currentAddress.id.startsWith('new-')) {
+
+    if (currentAddress.id.startsWith("new-")) {
       // Add new address
-      setAddresses([...addresses, {
-        ...currentAddress,
-        id: `address-${Date.now()}`
-      }]);
+      setAddresses([
+        ...addresses,
+        {
+          ...currentAddress,
+          id: `address-${Date.now()}`,
+        },
+      ]);
     } else {
       // Update existing address
-      setAddresses(addresses.map(address => 
-        address.id === currentAddress.id ? currentAddress : address
-      ));
+      setAddresses(
+        addresses.map((address) =>
+          address.id === currentAddress.id ? currentAddress : address
+        )
+      );
     }
-    
+
     setEditMode(false);
     setCurrentAddress(null);
   };
@@ -94,40 +121,43 @@ export default function ShippingInformationScreen() {
     setCurrentAddress(null);
   };
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: any, value: any) => {
     setCurrentAddress({
       ...currentAddress,
-      [field]: value
+      [field]: value,
     });
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
-      <Stack.Screen 
+    <SafeAreaView style={styles.container} edges={["bottom"]}>
+      <Stack.Screen
         options={{
-          title: 'Shipping Information',
+          title: "Shipping Information",
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <ArrowLeft size={24} color={Colors.neutral.black} />
             </TouchableOpacity>
           ),
-        }} 
+        }}
       />
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         {!editMode ? (
           <>
             <View style={styles.header}>
               <Text style={styles.sectionTitle}>Your Shipping Addresses</Text>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.addButton}
                 onPress={handleAddAddress}
               >
                 <Plus size={20} color={Colors.neutral.white} />
               </TouchableOpacity>
             </View>
-            
-            {addresses.map(address => (
+
+            {addresses.map((address) => (
               <View key={address.id} style={styles.addressCard}>
                 <View style={styles.addressHeader}>
                   <View style={styles.addressNameContainer}>
@@ -138,16 +168,16 @@ export default function ShippingInformationScreen() {
                       </View>
                     )}
                   </View>
-                  
+
                   <View style={styles.addressActions}>
-                    <TouchableOpacity 
+                    <TouchableOpacity
                       style={styles.addressAction}
                       onPress={() => handleEditAddress(address)}
                     >
                       <Edit2 size={16} color={Colors.primary.burgundy} />
                     </TouchableOpacity>
-                    
-                    <TouchableOpacity 
+
+                    <TouchableOpacity
                       style={styles.addressAction}
                       onPress={() => handleDeleteAddress(address.id)}
                     >
@@ -155,18 +185,24 @@ export default function ShippingInformationScreen() {
                     </TouchableOpacity>
                   </View>
                 </View>
-                
+
                 <View style={styles.addressContent}>
-                  <MapPin size={20} color={Colors.primary.burgundy} style={styles.addressIcon} />
+                  <MapPin
+                    size={20}
+                    color={Colors.primary.burgundy}
+                    style={styles.addressIcon}
+                  />
                   <View style={styles.addressDetails}>
                     <Text style={styles.addressText}>{address.street}</Text>
-                    <Text style={styles.addressText}>{address.city}, {address.state} {address.zip}</Text>
+                    <Text style={styles.addressText}>
+                      {address.city}, {address.state} {address.zip}
+                    </Text>
                     <Text style={styles.addressText}>{address.country}</Text>
                   </View>
                 </View>
-                
+
                 {!address.isDefault && (
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={styles.setDefaultButton}
                     onPress={() => handleSetDefault(address.id)}
                   >
@@ -176,13 +212,15 @@ export default function ShippingInformationScreen() {
                 )}
               </View>
             ))}
-            
+
             {addresses.length === 0 && (
               <View style={styles.emptyContainer}>
                 <MapPin size={48} color={Colors.neutral.lightGray} />
                 <Text style={styles.emptyText}>No addresses found</Text>
-                <Text style={styles.emptySubtext}>Add a shipping address to get started</Text>
-                <TouchableOpacity 
+                <Text style={styles.emptySubtext}>
+                  Add a shipping address to get started
+                </Text>
+                <TouchableOpacity
                   style={styles.addAddressButton}
                   onPress={handleAddAddress}
                 >
@@ -194,29 +232,31 @@ export default function ShippingInformationScreen() {
         ) : (
           <View style={styles.editForm}>
             <Text style={styles.formTitle}>
-              {currentAddress.id.startsWith('new-') ? 'Add New Address' : 'Edit Address'}
+              {currentAddress.id.startsWith("new-")
+                ? "Add New Address"
+                : "Edit Address"}
             </Text>
-            
+
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>Location Name</Text>
               <TextInput
                 style={styles.input}
                 placeholder="e.g. Main Warehouse, Office, etc."
                 value={currentAddress.name}
-                onChangeText={(text) => handleInputChange('name', text)}
+                onChangeText={(text) => handleInputChange("name", text)}
               />
             </View>
-            
+
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>Street Address</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Street address"
                 value={currentAddress.street}
-                onChangeText={(text) => handleInputChange('street', text)}
+                onChangeText={(text) => handleInputChange("street", text)}
               />
             </View>
-            
+
             <View style={styles.inputRow}>
               <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
                 <Text style={styles.inputLabel}>City</Text>
@@ -224,66 +264,74 @@ export default function ShippingInformationScreen() {
                   style={styles.input}
                   placeholder="City"
                   value={currentAddress.city}
-                  onChangeText={(text) => handleInputChange('city', text)}
+                  onChangeText={(text) => handleInputChange("city", text)}
                 />
               </View>
-              
-              <View style={[styles.inputGroup, { width: '30%' }]}>
+
+              <View style={[styles.inputGroup, { width: "30%" }]}>
                 <Text style={styles.inputLabel}>State</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="State"
                   value={currentAddress.state}
-                  onChangeText={(text) => handleInputChange('state', text)}
+                  onChangeText={(text) => handleInputChange("state", text)}
                 />
               </View>
             </View>
-            
+
             <View style={styles.inputRow}>
-              <View style={[styles.inputGroup, { width: '40%', marginRight: 8 }]}>
+              <View
+                style={[styles.inputGroup, { width: "40%", marginRight: 8 }]}
+              >
                 <Text style={styles.inputLabel}>ZIP Code</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="ZIP Code"
                   value={currentAddress.zip}
-                  onChangeText={(text) => handleInputChange('zip', text)}
+                  onChangeText={(text) => handleInputChange("zip", text)}
                   keyboardType="numeric"
                 />
               </View>
-              
+
               <View style={[styles.inputGroup, { flex: 1 }]}>
                 <Text style={styles.inputLabel}>Country</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="Country"
                   value={currentAddress.country}
-                  onChangeText={(text) => handleInputChange('country', text)}
+                  onChangeText={(text) => handleInputChange("country", text)}
                 />
               </View>
             </View>
-            
+
             <View style={styles.checkboxContainer}>
               <TouchableOpacity
                 style={[
                   styles.checkbox,
-                  currentAddress.isDefault && styles.checkboxChecked
+                  currentAddress.isDefault && styles.checkboxChecked,
                 ]}
-                onPress={() => handleInputChange('isDefault', !currentAddress.isDefault)}
+                onPress={() =>
+                  handleInputChange("isDefault", !currentAddress.isDefault)
+                }
               >
-                {currentAddress.isDefault && <Check size={16} color={Colors.neutral.white} />}
+                {currentAddress.isDefault && (
+                  <Check size={16} color={Colors.neutral.white} />
+                )}
               </TouchableOpacity>
-              <Text style={styles.checkboxLabel}>Set as default shipping address</Text>
+              <Text style={styles.checkboxLabel}>
+                Set as default shipping address
+              </Text>
             </View>
-            
+
             <View style={styles.formButtons}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={[styles.formButton, styles.cancelButton]}
                 onPress={handleCancelEdit}
               >
                 <Text style={styles.cancelButtonText}>Cancel</Text>
               </TouchableOpacity>
-              
-              <TouchableOpacity 
+
+              <TouchableOpacity
                 style={[styles.formButton, styles.saveButton]}
                 onPress={handleSaveAddress}
               >
@@ -307,14 +355,14 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 16,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
   },
   addButton: {
@@ -322,8 +370,8 @@ const styles = StyleSheet.create({
     height: 36,
     borderRadius: 18,
     backgroundColor: Colors.primary.burgundy,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   addressCard: {
     backgroundColor: Colors.neutral.white,
@@ -339,18 +387,18 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   addressHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 12,
   },
   addressNameContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   addressName: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
     marginRight: 8,
   },
@@ -363,17 +411,17 @@ const styles = StyleSheet.create({
   defaultText: {
     fontSize: 12,
     color: Colors.primary.burgundy,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   addressActions: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   addressAction: {
     padding: 8,
     marginLeft: 8,
   },
   addressContent: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 12,
   },
   addressIcon: {
@@ -389,9 +437,9 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   setDefaultButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 8,
     borderTopWidth: 1,
     borderTopColor: Colors.neutral.extraLightGray,
@@ -399,18 +447,18 @@ const styles = StyleSheet.create({
   setDefaultText: {
     fontSize: 14,
     color: Colors.primary.burgundy,
-    fontWeight: '500',
+    fontWeight: "500",
     marginLeft: 4,
   },
   emptyContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: 24,
     marginTop: 40,
   },
   emptyText: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.darkGray,
     marginTop: 16,
     marginBottom: 8,
@@ -418,7 +466,7 @@ const styles = StyleSheet.create({
   emptySubtext: {
     fontSize: 14,
     color: Colors.neutral.gray,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 24,
   },
   addAddressButton: {
@@ -430,7 +478,7 @@ const styles = StyleSheet.create({
   addAddressText: {
     color: Colors.neutral.white,
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   editForm: {
     padding: 16,
@@ -440,7 +488,7 @@ const styles = StyleSheet.create({
   },
   formTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
     marginBottom: 16,
   },
@@ -462,12 +510,12 @@ const styles = StyleSheet.create({
     color: Colors.neutral.black,
   },
   inputRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 16,
   },
   checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 24,
   },
   checkbox: {
@@ -477,8 +525,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.neutral.gray,
     marginRight: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   checkboxChecked: {
     backgroundColor: Colors.primary.burgundy,
@@ -489,14 +537,14 @@ const styles = StyleSheet.create({
     color: Colors.neutral.black,
   },
   formButtons: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   formButton: {
     flex: 1,
     height: 48,
     borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   cancelButton: {
     backgroundColor: Colors.neutral.extraLightGray,
@@ -505,7 +553,7 @@ const styles = StyleSheet.create({
   cancelButtonText: {
     color: Colors.neutral.darkGray,
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   saveButton: {
     backgroundColor: Colors.primary.burgundy,
@@ -513,6 +561,6 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: Colors.neutral.white,
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
 });

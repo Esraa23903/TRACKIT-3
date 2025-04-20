@@ -1,9 +1,15 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Colors from '@/constants/colors';
-import { AlertTriangle, RefreshCw } from 'lucide-react-native';
-import { router } from 'expo-router';
+import React, { Component, ErrorInfo, ReactNode } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Colors from "@/constants/colors";
+import { AlertTriangle, RefreshCw } from "lucide-react-native";
+import { router } from "expo-router";
 
 interface Props {
   children: ReactNode;
@@ -38,10 +44,10 @@ class ErrorBoundary extends Component<Props, State> {
       error,
       errorInfo,
     });
-    
+
     // Log the error to a service like Sentry or your own backend
-    console.error('Error caught by ErrorBoundary:', error, errorInfo);
-    
+    console.error("Error caught by ErrorBoundary:", error, errorInfo);
+
     // You could send this error to your backend or a service like Sentry
     // sendErrorToService(error, errorInfo);
   }
@@ -52,9 +58,9 @@ class ErrorBoundary extends Component<Props, State> {
       error: null,
       errorInfo: null,
     });
-    
+
     // Navigate back to the home screen
-    router.replace('/');
+    router.replace("/");
   };
 
   render(): ReactNode {
@@ -62,24 +68,37 @@ class ErrorBoundary extends Component<Props, State> {
       return (
         <SafeAreaView style={styles.container}>
           <View style={styles.content}>
-            <AlertTriangle size={64} color={Colors.status.error} style={styles.icon} />
+            <AlertTriangle
+              size={64}
+              color={Colors.status.error}
+              style={styles.icon}
+            />
             <Text style={styles.title}>Oops! Something went wrong</Text>
             <Text style={styles.message}>
               We're sorry, but an unexpected error occurred. Please try again.
             </Text>
-            
+
             <ScrollView style={styles.errorContainer}>
               <Text style={styles.errorTitle}>Error Details:</Text>
-              <Text style={styles.errorText}>{this.state.error?.toString()}</Text>
+              <Text style={styles.errorText}>
+                {this.state.error?.toString()}
+              </Text>
               {this.state.errorInfo && (
                 <Text style={styles.errorStack}>
                   {this.state.errorInfo.componentStack}
                 </Text>
               )}
             </ScrollView>
-            
-            <TouchableOpacity style={styles.button} onPress={this.handleRestart}>
-              <RefreshCw size={20} color={Colors.neutral.white} style={styles.buttonIcon} />
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={this.handleRestart}
+            >
+              <RefreshCw
+                size={20}
+                color={Colors.neutral.white}
+                style={styles.buttonIcon}
+              />
               <Text style={styles.buttonText}>Restart App</Text>
             </TouchableOpacity>
           </View>
@@ -99,28 +118,28 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   icon: {
     marginBottom: 24,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.neutral.black,
     marginBottom: 12,
-    textAlign: 'center',
+    textAlign: "center",
   },
   message: {
     fontSize: 16,
     color: Colors.neutral.gray,
     marginBottom: 24,
-    textAlign: 'center',
+    textAlign: "center",
   },
   errorContainer: {
     maxHeight: 200,
-    width: '100%',
+    width: "100%",
     backgroundColor: Colors.background.light,
     borderRadius: 12,
     padding: 16,
@@ -128,7 +147,7 @@ const styles = StyleSheet.create({
   },
   errorTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.neutral.black,
     marginBottom: 8,
   },
@@ -140,11 +159,11 @@ const styles = StyleSheet.create({
   errorStack: {
     fontSize: 12,
     color: Colors.neutral.darkGray,
-    fontFamily: 'monospace',
+    fontFamily: "monospace",
   },
   button: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: Colors.primary.burgundy,
     paddingVertical: 12,
     paddingHorizontal: 24,
@@ -156,7 +175,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: Colors.neutral.white,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });
 

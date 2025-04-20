@@ -1,22 +1,38 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, Platform } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Stack, useRouter } from 'expo-router';
-import Colors from '@/constants/colors';
-import { Camera, X, Calendar, Clock, MapPin, DollarSign } from 'lucide-react-native';
-import * as ImagePicker from 'expo-image-picker';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Platform,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Stack, useRouter } from "expo-router";
+import Colors from "@/constants/colors";
+import {
+  Camera,
+  X,
+  Calendar,
+  Clock,
+  MapPin,
+  DollarSign,
+} from "lucide-react-native";
+import * as ImagePicker from "expo-image-picker";
 
 export default function AddEventScreen() {
   const router = useRouter();
   const [eventImage, setEventImage] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    date: '',
-    time: '',
-    location: '',
-    category: '',
-    price: '',
+    title: "",
+    description: "",
+    date: "",
+    time: "",
+    location: "",
+    category: "",
+    price: "",
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -41,53 +57,64 @@ export default function AddEventScreen() {
 
   const handleSave = () => {
     // Here you would normally save the event to your database
-    console.log('Event data:', { ...formData, image: eventImage });
+    console.log("Event data:", { ...formData, image: eventImage });
     router.back();
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
-      <Stack.Screen 
+    <SafeAreaView style={styles.container} edges={["bottom"]}>
+      <Stack.Screen
         options={{
-          title: 'Add Event',
+          title: "Add Event",
           headerShadowVisible: false,
           headerStyle: { backgroundColor: Colors.neutral.extraLightGray },
-          headerTitleStyle: { color: Colors.neutral.black, fontWeight: '600' },
+          headerTitleStyle: { color: Colors.neutral.black, fontWeight: "600" },
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <X size={24} color={Colors.neutral.black} />
             </TouchableOpacity>
           ),
-        }} 
+        }}
       />
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.imageSection}>
           {eventImage ? (
             <View style={styles.imageContainer}>
               <Image source={{ uri: eventImage }} style={styles.eventImage} />
-              <TouchableOpacity style={styles.removeImageButton} onPress={() => setEventImage(null)}>
+              <TouchableOpacity
+                style={styles.removeImageButton}
+                onPress={() => setEventImage(null)}
+              >
                 <X size={20} color={Colors.neutral.white} />
               </TouchableOpacity>
             </View>
           ) : (
-            <TouchableOpacity style={styles.imagePlaceholder} onPress={pickImage}>
+            <TouchableOpacity
+              style={styles.imagePlaceholder}
+              onPress={pickImage}
+            >
               <Camera size={32} color={Colors.neutral.gray} />
-              <Text style={styles.imagePlaceholderText}>Add Event Cover Image</Text>
+              <Text style={styles.imagePlaceholderText}>
+                Add Event Cover Image
+              </Text>
             </TouchableOpacity>
           )}
         </View>
 
         <View style={styles.formSection}>
           <Text style={styles.sectionTitle}>Event Details</Text>
-          
+
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>Event Title</Text>
             <TextInput
               style={styles.input}
               placeholder="Enter event title"
               value={formData.title}
-              onChangeText={(text) => handleInputChange('title', text)}
+              onChangeText={(text) => handleInputChange("title", text)}
             />
           </View>
 
@@ -97,7 +124,7 @@ export default function AddEventScreen() {
               style={[styles.input, styles.textArea]}
               placeholder="Enter event description"
               value={formData.description}
-              onChangeText={(text) => handleInputChange('description', text)}
+              onChangeText={(text) => handleInputChange("description", text)}
               multiline
               numberOfLines={4}
               textAlignVertical="top"
@@ -110,23 +137,27 @@ export default function AddEventScreen() {
               style={styles.input}
               placeholder="e.g. Workshop, Conference, Networking"
               value={formData.category}
-              onChangeText={(text) => handleInputChange('category', text)}
+              onChangeText={(text) => handleInputChange("category", text)}
             />
           </View>
         </View>
 
         <View style={styles.formSection}>
           <Text style={styles.sectionTitle}>Date & Time</Text>
-          
+
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>Date</Text>
             <View style={styles.iconInput}>
-              <Calendar size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
+              <Calendar
+                size={20}
+                color={Colors.neutral.gray}
+                style={styles.inputIcon}
+              />
               <TextInput
                 style={styles.iconTextInput}
                 placeholder="YYYY-MM-DD"
                 value={formData.date}
-                onChangeText={(text) => handleInputChange('date', text)}
+                onChangeText={(text) => handleInputChange("date", text)}
               />
             </View>
           </View>
@@ -134,12 +165,16 @@ export default function AddEventScreen() {
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>Time</Text>
             <View style={styles.iconInput}>
-              <Clock size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
+              <Clock
+                size={20}
+                color={Colors.neutral.gray}
+                style={styles.inputIcon}
+              />
               <TextInput
                 style={styles.iconTextInput}
                 placeholder="HH:MM - HH:MM"
                 value={formData.time}
-                onChangeText={(text) => handleInputChange('time', text)}
+                onChangeText={(text) => handleInputChange("time", text)}
               />
             </View>
           </View>
@@ -147,16 +182,20 @@ export default function AddEventScreen() {
 
         <View style={styles.formSection}>
           <Text style={styles.sectionTitle}>Location & Price</Text>
-          
+
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>Location</Text>
             <View style={styles.iconInput}>
-              <MapPin size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
+              <MapPin
+                size={20}
+                color={Colors.neutral.gray}
+                style={styles.inputIcon}
+              />
               <TextInput
                 style={styles.iconTextInput}
                 placeholder="Enter event location"
                 value={formData.location}
-                onChangeText={(text) => handleInputChange('location', text)}
+                onChangeText={(text) => handleInputChange("location", text)}
               />
             </View>
           </View>
@@ -164,12 +203,16 @@ export default function AddEventScreen() {
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>Price ($)</Text>
             <View style={styles.iconInput}>
-              <DollarSign size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
+              <DollarSign
+                size={20}
+                color={Colors.neutral.gray}
+                style={styles.inputIcon}
+              />
               <TextInput
                 style={styles.iconTextInput}
                 placeholder="0.00 (leave empty for free event)"
                 value={formData.price}
-                onChangeText={(text) => handleInputChange('price', text)}
+                onChangeText={(text) => handleInputChange("price", text)}
                 keyboardType="decimal-pad"
               />
             </View>
@@ -178,10 +221,7 @@ export default function AddEventScreen() {
       </ScrollView>
 
       <View style={styles.footer}>
-        <TouchableOpacity 
-          style={styles.saveButton}
-          onPress={handleSave}
-        >
+        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
           <Text style={styles.saveButtonText}>Create Event</Text>
         </TouchableOpacity>
       </View>
@@ -202,15 +242,15 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   imagePlaceholder: {
-    width: '100%',
+    width: "100%",
     height: 200,
     backgroundColor: Colors.neutral.white,
     borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderWidth: 1,
     borderColor: Colors.neutral.extraLightGray,
-    borderStyle: 'dashed',
+    borderStyle: "dashed",
   },
   imagePlaceholderText: {
     marginTop: 8,
@@ -218,26 +258,26 @@ const styles = StyleSheet.create({
     color: Colors.neutral.gray,
   },
   imageContainer: {
-    width: '100%',
+    width: "100%",
     height: 200,
     borderRadius: 12,
-    overflow: 'hidden',
-    position: 'relative',
+    overflow: "hidden",
+    position: "relative",
   },
   eventImage: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   removeImageButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 8,
     right: 8,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     borderRadius: 20,
     width: 32,
     height: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   formSection: {
     backgroundColor: Colors.neutral.white,
@@ -247,7 +287,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
     marginBottom: 16,
   },
@@ -268,13 +308,13 @@ const styles = StyleSheet.create({
   },
   textArea: {
     minHeight: 100,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
   iconInput: {
     backgroundColor: Colors.neutral.extraLightGray,
     borderRadius: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 12,
   },
   inputIcon: {
@@ -296,11 +336,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary.burgundy,
     borderRadius: 12,
     padding: 16,
-    alignItems: 'center',
+    alignItems: "center",
   },
   saveButtonText: {
     color: Colors.neutral.white,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });

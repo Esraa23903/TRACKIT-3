@@ -1,13 +1,29 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Switch, TextInput } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Stack, useRouter } from 'expo-router';
-import Colors from '@/constants/colors';
-import { ArrowLeft, Lock, Eye, EyeOff, Fingerprint, ShieldCheck, AlertTriangle } from 'lucide-react-native';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Switch,
+  TextInput,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Stack, useRouter } from "expo-router";
+import Colors from "@/constants/colors";
+import {
+  ArrowLeft,
+  Lock,
+  Eye,
+  EyeOff,
+  Fingerprint,
+  ShieldCheck,
+  AlertTriangle,
+} from "lucide-react-native";
 
 export default function SecurityScreen() {
   const router = useRouter();
-  
+
   const [securitySettings, setSecuritySettings] = useState({
     twoFactorAuth: false,
     biometricLogin: true,
@@ -17,17 +33,17 @@ export default function SecurityScreen() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
+
   const [passwordForm, setPasswordForm] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
   });
 
   const toggleSetting = (key: string) => {
-    setSecuritySettings(prev => ({
+    setSecuritySettings((prev) => ({
       ...prev,
-      [key]: !prev[key as keyof typeof prev]
+      [key]: !prev[key as keyof typeof prev],
     }));
   };
 
@@ -41,94 +57,138 @@ export default function SecurityScreen() {
   const handleChangePassword = () => {
     // In a real app, you would validate and change the password
     if (!passwordForm.currentPassword) {
-      alert('Please enter your current password');
+      alert("Please enter your current password");
       return;
     }
-    
+
     if (!passwordForm.newPassword) {
-      alert('Please enter a new password');
+      alert("Please enter a new password");
       return;
     }
-    
+
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      alert('New passwords do not match');
+      alert("New passwords do not match");
       return;
     }
-    
+
     // Reset form and show success message
     setPasswordForm({
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: '',
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
     });
-    
-    alert('Password changed successfully');
+
+    alert("Password changed successfully");
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
-      <Stack.Screen 
+    <SafeAreaView style={styles.container} edges={["bottom"]}>
+      <Stack.Screen
         options={{
-          title: 'Security',
+          title: "Security",
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <ArrowLeft size={24} color={Colors.neutral.black} />
             </TouchableOpacity>
           ),
-        }} 
+        }}
       />
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Security Settings</Text>
-          
+
           <View style={styles.settingItem}>
             <View style={styles.settingInfo}>
-              <ShieldCheck size={20} color={Colors.primary.burgundy} style={styles.settingIcon} />
+              <ShieldCheck
+                size={20}
+                color={Colors.primary.burgundy}
+                style={styles.settingIcon}
+              />
               <View>
-                <Text style={styles.settingText}>Two-Factor Authentication</Text>
-                <Text style={styles.settingDescription}>Add an extra layer of security to your account</Text>
+                <Text style={styles.settingText}>
+                  Two-Factor Authentication
+                </Text>
+                <Text style={styles.settingDescription}>
+                  Add an extra layer of security to your account
+                </Text>
               </View>
             </View>
             <Switch
-              trackColor={{ false: Colors.neutral.lightGray, true: Colors.primary.burgundyLight }}
-              thumbColor={securitySettings.twoFactorAuth ? Colors.primary.burgundy : Colors.neutral.white}
+              trackColor={{
+                false: Colors.neutral.lightGray,
+                true: Colors.primary.burgundyLight,
+              }}
+              thumbColor={
+                securitySettings.twoFactorAuth
+                  ? Colors.primary.burgundy
+                  : Colors.neutral.white
+              }
               ios_backgroundColor={Colors.neutral.lightGray}
-              onValueChange={() => toggleSetting('twoFactorAuth')}
+              onValueChange={() => toggleSetting("twoFactorAuth")}
               value={securitySettings.twoFactorAuth}
             />
           </View>
-          
+
           <View style={styles.settingItem}>
             <View style={styles.settingInfo}>
-              <Fingerprint size={20} color={Colors.primary.burgundy} style={styles.settingIcon} />
+              <Fingerprint
+                size={20}
+                color={Colors.primary.burgundy}
+                style={styles.settingIcon}
+              />
               <View>
                 <Text style={styles.settingText}>Biometric Login</Text>
-                <Text style={styles.settingDescription}>Use fingerprint or face recognition to log in</Text>
+                <Text style={styles.settingDescription}>
+                  Use fingerprint or face recognition to log in
+                </Text>
               </View>
             </View>
             <Switch
-              trackColor={{ false: Colors.neutral.lightGray, true: Colors.primary.burgundyLight }}
-              thumbColor={securitySettings.biometricLogin ? Colors.primary.burgundy : Colors.neutral.white}
+              trackColor={{
+                false: Colors.neutral.lightGray,
+                true: Colors.primary.burgundyLight,
+              }}
+              thumbColor={
+                securitySettings.biometricLogin
+                  ? Colors.primary.burgundy
+                  : Colors.neutral.white
+              }
               ios_backgroundColor={Colors.neutral.lightGray}
-              onValueChange={() => toggleSetting('biometricLogin')}
+              onValueChange={() => toggleSetting("biometricLogin")}
               value={securitySettings.biometricLogin}
             />
           </View>
-          
+
           <View style={styles.settingItem}>
             <View style={styles.settingInfo}>
-              <AlertTriangle size={20} color={Colors.primary.burgundy} style={styles.settingIcon} />
+              <AlertTriangle
+                size={20}
+                color={Colors.primary.burgundy}
+                style={styles.settingIcon}
+              />
               <View>
                 <Text style={styles.settingText}>Login Notifications</Text>
-                <Text style={styles.settingDescription}>Get notified of new logins to your account</Text>
+                <Text style={styles.settingDescription}>
+                  Get notified of new logins to your account
+                </Text>
               </View>
             </View>
             <Switch
-              trackColor={{ false: Colors.neutral.lightGray, true: Colors.primary.burgundyLight }}
-              thumbColor={securitySettings.loginNotifications ? Colors.primary.burgundy : Colors.neutral.white}
+              trackColor={{
+                false: Colors.neutral.lightGray,
+                true: Colors.primary.burgundyLight,
+              }}
+              thumbColor={
+                securitySettings.loginNotifications
+                  ? Colors.primary.burgundy
+                  : Colors.neutral.white
+              }
               ios_backgroundColor={Colors.neutral.lightGray}
-              onValueChange={() => toggleSetting('loginNotifications')}
+              onValueChange={() => toggleSetting("loginNotifications")}
               value={securitySettings.loginNotifications}
             />
           </View>
@@ -136,16 +196,22 @@ export default function SecurityScreen() {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Change Password</Text>
-          
+
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>Current Password</Text>
             <View style={styles.inputContainer}>
-              <Lock size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
+              <Lock
+                size={20}
+                color={Colors.neutral.gray}
+                style={styles.inputIcon}
+              />
               <TextInput
                 style={styles.input}
                 placeholder="Enter current password"
                 value={passwordForm.currentPassword}
-                onChangeText={(text) => handleInputChange('currentPassword', text)}
+                onChangeText={(text) =>
+                  handleInputChange("currentPassword", text)
+                }
                 secureTextEntry={!showCurrentPassword}
               />
               <TouchableOpacity
@@ -160,16 +226,20 @@ export default function SecurityScreen() {
               </TouchableOpacity>
             </View>
           </View>
-          
+
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>New Password</Text>
             <View style={styles.inputContainer}>
-              <Lock size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
+              <Lock
+                size={20}
+                color={Colors.neutral.gray}
+                style={styles.inputIcon}
+              />
               <TextInput
                 style={styles.input}
                 placeholder="Enter new password"
                 value={passwordForm.newPassword}
-                onChangeText={(text) => handleInputChange('newPassword', text)}
+                onChangeText={(text) => handleInputChange("newPassword", text)}
                 secureTextEntry={!showNewPassword}
               />
               <TouchableOpacity
@@ -184,16 +254,22 @@ export default function SecurityScreen() {
               </TouchableOpacity>
             </View>
           </View>
-          
+
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>Confirm New Password</Text>
             <View style={styles.inputContainer}>
-              <Lock size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
+              <Lock
+                size={20}
+                color={Colors.neutral.gray}
+                style={styles.inputIcon}
+              />
               <TextInput
                 style={styles.input}
                 placeholder="Confirm new password"
                 value={passwordForm.confirmPassword}
-                onChangeText={(text) => handleInputChange('confirmPassword', text)}
+                onChangeText={(text) =>
+                  handleInputChange("confirmPassword", text)
+                }
                 secureTextEntry={!showConfirmPassword}
               />
               <TouchableOpacity
@@ -208,8 +284,8 @@ export default function SecurityScreen() {
               </TouchableOpacity>
             </View>
           </View>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={styles.changePasswordButton}
             onPress={handleChangePassword}
           >
@@ -219,17 +295,17 @@ export default function SecurityScreen() {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Security Information</Text>
-          
+
           <View style={styles.infoItem}>
             <Text style={styles.infoLabel}>Last Login</Text>
             <Text style={styles.infoValue}>Today, 10:30 AM</Text>
           </View>
-          
+
           <View style={styles.infoItem}>
             <Text style={styles.infoLabel}>Last Password Change</Text>
             <Text style={styles.infoValue}>30 days ago</Text>
           </View>
-          
+
           <View style={styles.infoItem}>
             <Text style={styles.infoLabel}>Active Sessions</Text>
             <Text style={styles.infoValue}>1 device</Text>
@@ -256,21 +332,21 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
     marginBottom: 16,
   },
   settingItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: Colors.neutral.extraLightGray,
   },
   settingInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     flex: 1,
     marginRight: 16,
   },
@@ -295,8 +371,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
     borderColor: Colors.neutral.extraLightGray,
     borderRadius: 12,
@@ -309,7 +385,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    height: '100%',
+    height: "100%",
     fontSize: 16,
     color: Colors.neutral.black,
   },
@@ -320,18 +396,18 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary.burgundy,
     borderRadius: 12,
     height: 56,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 8,
   },
   changePasswordText: {
     color: Colors.neutral.white,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   infoItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: Colors.neutral.extraLightGray,
@@ -342,7 +418,7 @@ const styles = StyleSheet.create({
   },
   infoValue: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
     color: Colors.neutral.black,
   },
 });

@@ -1,46 +1,63 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, Platform, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Stack, useRouter } from 'expo-router';
-import Colors from '@/constants/colors';
-import { Camera, X, Plus, ChevronDown } from 'lucide-react-native';
-import * as ImagePicker from 'expo-image-picker';
-import { suppliers } from '@/mocks/suppliers';
-import { useAuthStore } from '@/store/auth-store';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Platform,
+  Alert,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Stack, useRouter } from "expo-router";
+import Colors from "@/constants/colors";
+import { Camera, X, Plus, ChevronDown } from "lucide-react-native";
+import * as ImagePicker from "expo-image-picker";
+import { suppliers } from "@/mocks/suppliers";
+import { useAuthStore } from "@/store/auth-store";
 
 export default function AddProductScreen() {
   const router = useRouter();
   const { hasPermission } = useAuthStore();
   const [productImage, setProductImage] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    name: '',
-    sku: '',
-    description: '',
-    category: '',
-    price: '',
-    quantity: '',
-    minStockLevel: '',
-    supplierId: '',
+    name: "",
+    sku: "",
+    description: "",
+    category: "",
+    price: "",
+    quantity: "",
+    minStockLevel: "",
+    supplierId: "",
   });
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [showSupplierDropdown, setShowSupplierDropdown] = useState(false);
-  const [newCategory, setNewCategory] = useState('');
+  const [newCategory, setNewCategory] = useState("");
   const [showAddCategory, setShowAddCategory] = useState(false);
 
   // HIGHLIGHT: Changed to allow adding custom categories
-  const [categories, setCategories] = useState(['Beverages', 'Baking', 'Kitchen', 'Confectionery', 'Cooking', 'Dining']);
+  const [categories, setCategories] = useState([
+    "Beverages",
+    "Baking",
+    "Kitchen",
+    "Confectionery",
+    "Cooking",
+    "Dining",
+  ]);
 
   // Check if user has permission to add products
   React.useEffect(() => {
-    if (!hasPermission('add_product')) {
+    if (!hasPermission("add_product")) {
       Alert.alert(
-        'Permission Denied',
-        'You do not have permission to add products',
+        "Permission Denied",
+        "You do not have permission to add products",
         [
           {
-            text: 'OK',
-            onPress: () => router.back()
-          }
+            text: "OK",
+            onPress: () => router.back(),
+          },
         ]
       );
     }
@@ -68,22 +85,22 @@ export default function AddProductScreen() {
 
   // HIGHLIGHT: Added function to add a new category
   const handleAddNewCategory = () => {
-    if (newCategory.trim() === '') {
-      Alert.alert('Error', 'Please enter a category name');
+    if (newCategory.trim() === "") {
+      Alert.alert("Error", "Please enter a category name");
       return;
     }
-    
+
     if (categories.includes(newCategory.trim())) {
-      Alert.alert('Error', 'This category already exists');
+      Alert.alert("Error", "This category already exists");
       return;
     }
-    
+
     setCategories([...categories, newCategory.trim()]);
     setFormData({
       ...formData,
-      category: newCategory.trim()
+      category: newCategory.trim(),
     });
-    setNewCategory('');
+    setNewCategory("");
     setShowAddCategory(false);
     setShowCategoryDropdown(false);
   };
@@ -91,56 +108,64 @@ export default function AddProductScreen() {
   const handleSave = () => {
     // Validate form data
     if (!formData.name) {
-      Alert.alert('Error', 'Product name is required');
+      Alert.alert("Error", "Product name is required");
       return;
     }
 
     if (!formData.price) {
-      Alert.alert('Error', 'Product price is required');
+      Alert.alert("Error", "Product price is required");
       return;
     }
 
     // Here you would normally save the product to your database
-    console.log('Product data:', { ...formData, image: productImage });
-    Alert.alert(
-      'Success',
-      'Product added successfully',
-      [
-        {
-          text: 'OK',
-          onPress: () => router.back()
-        }
-      ]
-    );
+    console.log("Product data:", { ...formData, image: productImage });
+    Alert.alert("Success", "Product added successfully", [
+      {
+        text: "OK",
+        onPress: () => router.back(),
+      },
+    ]);
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
-      <Stack.Screen 
+    <SafeAreaView style={styles.container} edges={["bottom"]}>
+      <Stack.Screen
         options={{
-          title: 'Add Product',
+          title: "Add Product",
           headerShadowVisible: false,
           headerStyle: { backgroundColor: Colors.neutral.extraLightGray },
-          headerTitleStyle: { color: Colors.neutral.black, fontWeight: '600' },
+          headerTitleStyle: { color: Colors.neutral.black, fontWeight: "600" },
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <X size={24} color={Colors.neutral.black} />
             </TouchableOpacity>
           ),
-        }} 
+        }}
       />
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.imageSection}>
           {productImage ? (
             <View style={styles.imageContainer}>
-              <Image source={{ uri: productImage }} style={styles.productImage} />
-              <TouchableOpacity style={styles.removeImageButton} onPress={() => setProductImage(null)}>
+              <Image
+                source={{ uri: productImage }}
+                style={styles.productImage}
+              />
+              <TouchableOpacity
+                style={styles.removeImageButton}
+                onPress={() => setProductImage(null)}
+              >
                 <X size={20} color={Colors.neutral.white} />
               </TouchableOpacity>
             </View>
           ) : (
-            <TouchableOpacity style={styles.imagePlaceholder} onPress={pickImage}>
+            <TouchableOpacity
+              style={styles.imagePlaceholder}
+              onPress={pickImage}
+            >
               <Camera size={32} color={Colors.neutral.gray} />
               <Text style={styles.imagePlaceholderText}>Add Product Image</Text>
             </TouchableOpacity>
@@ -149,14 +174,14 @@ export default function AddProductScreen() {
 
         <View style={styles.formSection}>
           <Text style={styles.sectionTitle}>Product Information</Text>
-          
+
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>Product Name</Text>
             <TextInput
               style={styles.input}
               placeholder="Enter product name"
               value={formData.name}
-              onChangeText={(text) => handleInputChange('name', text)}
+              onChangeText={(text) => handleInputChange("name", text)}
             />
           </View>
 
@@ -166,7 +191,7 @@ export default function AddProductScreen() {
               style={styles.input}
               placeholder="Enter SKU"
               value={formData.sku}
-              onChangeText={(text) => handleInputChange('sku', text)}
+              onChangeText={(text) => handleInputChange("sku", text)}
             />
           </View>
 
@@ -176,7 +201,7 @@ export default function AddProductScreen() {
               style={[styles.input, styles.textArea]}
               placeholder="Enter product description"
               value={formData.description}
-              onChangeText={(text) => handleInputChange('description', text)}
+              onChangeText={(text) => handleInputChange("description", text)}
               multiline
               numberOfLines={4}
               textAlignVertical="top"
@@ -185,16 +210,22 @@ export default function AddProductScreen() {
 
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>Category</Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.dropdownButton}
               onPress={() => setShowCategoryDropdown(!showCategoryDropdown)}
             >
-              <Text style={formData.category ? styles.dropdownText : styles.dropdownPlaceholder}>
+              <Text
+                style={
+                  formData.category
+                    ? styles.dropdownText
+                    : styles.dropdownPlaceholder
+                }
+              >
                 {formData.category || "Add category"}
               </Text>
               <ChevronDown size={20} color={Colors.neutral.gray} />
             </TouchableOpacity>
-            
+
             {showCategoryDropdown && (
               <View style={styles.dropdownMenu}>
                 {/* HIGHLIGHT: Added option to add a new category */}
@@ -203,17 +234,22 @@ export default function AddProductScreen() {
                   onPress={() => setShowAddCategory(true)}
                 >
                   <Plus size={16} color={Colors.primary.burgundy} />
-                  <Text style={[styles.dropdownItemText, { color: Colors.primary.burgundy }]}>
+                  <Text
+                    style={[
+                      styles.dropdownItemText,
+                      { color: Colors.primary.burgundy },
+                    ]}
+                  >
                     Add New Category
                   </Text>
                 </TouchableOpacity>
-                
+
                 {categories.map((category) => (
                   <TouchableOpacity
                     key={category}
                     style={styles.dropdownItem}
                     onPress={() => {
-                      handleInputChange('category', category);
+                      handleInputChange("category", category);
                       setShowCategoryDropdown(false);
                     }}
                   >
@@ -222,7 +258,7 @@ export default function AddProductScreen() {
                 ))}
               </View>
             )}
-            
+
             {/* HIGHLIGHT: Add new category input */}
             {showAddCategory && (
               <View style={styles.addCategoryContainer}>
@@ -234,16 +270,16 @@ export default function AddProductScreen() {
                   autoFocus
                 />
                 <View style={styles.addCategoryActions}>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={[styles.addCategoryAction, styles.cancelButton]}
                     onPress={() => {
                       setShowAddCategory(false);
-                      setNewCategory('');
+                      setNewCategory("");
                     }}
                   >
                     <Text style={styles.cancelButtonText}>Cancel</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={[styles.addCategoryAction, styles.addButton]}
                     onPress={handleAddNewCategory}
                   >
@@ -257,14 +293,14 @@ export default function AddProductScreen() {
 
         <View style={styles.formSection}>
           <Text style={styles.sectionTitle}>Inventory Details</Text>
-          
+
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>Price ($)</Text>
             <TextInput
               style={styles.input}
               placeholder="0.00"
               value={formData.price}
-              onChangeText={(text) => handleInputChange('price', text)}
+              onChangeText={(text) => handleInputChange("price", text)}
               keyboardType="decimal-pad"
             />
           </View>
@@ -275,7 +311,7 @@ export default function AddProductScreen() {
               style={styles.input}
               placeholder="0"
               value={formData.quantity}
-              onChangeText={(text) => handleInputChange('quantity', text)}
+              onChangeText={(text) => handleInputChange("quantity", text)}
               keyboardType="number-pad"
             />
           </View>
@@ -286,7 +322,7 @@ export default function AddProductScreen() {
               style={styles.input}
               placeholder="0"
               value={formData.minStockLevel}
-              onChangeText={(text) => handleInputChange('minStockLevel', text)}
+              onChangeText={(text) => handleInputChange("minStockLevel", text)}
               keyboardType="number-pad"
             />
           </View>
@@ -294,21 +330,28 @@ export default function AddProductScreen() {
 
         <View style={styles.formSection}>
           <Text style={styles.sectionTitle}>Supplier Information</Text>
-          
+
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>Supplier</Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.dropdownButton}
               onPress={() => setShowSupplierDropdown(!showSupplierDropdown)}
             >
-              <Text style={formData.supplierId ? styles.dropdownText : styles.dropdownPlaceholder}>
-                {formData.supplierId ? 
-                  suppliers.find(s => s.id === formData.supplierId)?.name || "Select supplier" : 
-                  "Select supplier"}
+              <Text
+                style={
+                  formData.supplierId
+                    ? styles.dropdownText
+                    : styles.dropdownPlaceholder
+                }
+              >
+                {formData.supplierId
+                  ? suppliers.find((s) => s.id === formData.supplierId)?.name ||
+                    "Select supplier"
+                  : "Select supplier"}
               </Text>
               <ChevronDown size={20} color={Colors.neutral.gray} />
             </TouchableOpacity>
-            
+
             {showSupplierDropdown && (
               <View style={styles.dropdownMenu}>
                 {suppliers.map((supplier) => (
@@ -316,7 +359,7 @@ export default function AddProductScreen() {
                     key={supplier.id}
                     style={styles.dropdownItem}
                     onPress={() => {
-                      handleInputChange('supplierId', supplier.id);
+                      handleInputChange("supplierId", supplier.id);
                       setShowSupplierDropdown(false);
                     }}
                   >
@@ -330,10 +373,7 @@ export default function AddProductScreen() {
       </ScrollView>
 
       <View style={styles.footer}>
-        <TouchableOpacity 
-          style={styles.saveButton}
-          onPress={handleSave}
-        >
+        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
           <Text style={styles.saveButtonText}>Save Product</Text>
         </TouchableOpacity>
       </View>
@@ -351,19 +391,19 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   imageSection: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 24,
   },
   imagePlaceholder: {
-    width: '100%',
+    width: "100%",
     height: 200,
     backgroundColor: Colors.neutral.white,
     borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderWidth: 1,
     borderColor: Colors.neutral.extraLightGray,
-    borderStyle: 'dashed',
+    borderStyle: "dashed",
   },
   imagePlaceholderText: {
     marginTop: 8,
@@ -371,26 +411,26 @@ const styles = StyleSheet.create({
     color: Colors.neutral.gray,
   },
   imageContainer: {
-    width: '100%',
+    width: "100%",
     height: 200,
     borderRadius: 12,
-    overflow: 'hidden',
-    position: 'relative',
+    overflow: "hidden",
+    position: "relative",
   },
   productImage: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   removeImageButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 8,
     right: 8,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     borderRadius: 20,
     width: 32,
     height: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   formSection: {
     backgroundColor: Colors.neutral.white,
@@ -400,7 +440,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
     marginBottom: 16,
   },
@@ -421,15 +461,15 @@ const styles = StyleSheet.create({
   },
   textArea: {
     minHeight: 100,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
   dropdownButton: {
     backgroundColor: Colors.neutral.extraLightGray,
     borderRadius: 8,
     padding: 12,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   dropdownText: {
     fontSize: 16,
@@ -468,9 +508,9 @@ const styles = StyleSheet.create({
   },
   // HIGHLIGHT: Added styles for add category functionality
   addCategoryButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.primary.burgundy + '10',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: Colors.primary.burgundy + "10",
   },
   addCategoryContainer: {
     marginTop: 8,
@@ -500,8 +540,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   addCategoryActions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
   addCategoryAction: {
     paddingVertical: 8,
@@ -514,14 +554,14 @@ const styles = StyleSheet.create({
   },
   cancelButtonText: {
     color: Colors.neutral.darkGray,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   addButton: {
     backgroundColor: Colors.primary.burgundy,
   },
   addButtonText: {
     color: Colors.neutral.white,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   footer: {
     padding: 16,
@@ -533,11 +573,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary.burgundy,
     borderRadius: 12,
     padding: 16,
-    alignItems: 'center',
+    alignItems: "center",
   },
   saveButtonText: {
     color: Colors.neutral.white,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });

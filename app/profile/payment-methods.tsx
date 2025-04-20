@@ -1,28 +1,41 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Stack, useRouter } from 'expo-router';
-import Colors from '@/constants/colors';
-import { ArrowLeft, CreditCard, Plus, Check, Trash2 } from 'lucide-react-native';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Stack, useRouter } from "expo-router";
+import Colors from "@/constants/colors";
+import {
+  ArrowLeft,
+  CreditCard,
+  Plus,
+  Check,
+  Trash2,
+} from "lucide-react-native";
 
 // Mock payment methods
 const mockPaymentMethods = [
   {
-    id: '1',
-    type: 'visa',
-    last4: '4242',
+    id: "1",
+    type: "visa",
+    last4: "4242",
     expMonth: 12,
     expYear: 2024,
     isDefault: true,
   },
   {
-    id: '2',
-    type: 'mastercard',
-    last4: '5555',
+    id: "2",
+    type: "mastercard",
+    last4: "5555",
     expMonth: 10,
     expYear: 2025,
     isDefault: false,
-  }
+  },
 ];
 
 export default function PaymentMethodsScreen() {
@@ -31,55 +44,60 @@ export default function PaymentMethodsScreen() {
 
   const handleAddPaymentMethod = () => {
     // In a real app, you would navigate to a screen to add a new payment method
-    alert('Add payment method functionality would be implemented here');
+    alert("Add payment method functionality would be implemented here");
   };
 
   const handleSetDefault = (id: string) => {
-    setPaymentMethods(methods => 
-      methods.map(method => ({
+    setPaymentMethods((methods) =>
+      methods.map((method) => ({
         ...method,
-        isDefault: method.id === id
+        isDefault: method.id === id,
       }))
     );
   };
 
   const handleDeletePaymentMethod = (id: string) => {
-    setPaymentMethods(methods => methods.filter(method => method.id !== id));
+    setPaymentMethods((methods) =>
+      methods.filter((method) => method.id !== id)
+    );
   };
 
   const getCardImage = (type: string) => {
     switch (type) {
-      case 'visa':
-        return 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png';
-      case 'mastercard':
-        return 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1280px-Mastercard-logo.svg.png';
+      case "visa":
+        return "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png";
+      case "mastercard":
+        return "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1280px-Mastercard-logo.svg.png";
       default:
-        return '';
+        return "";
     }
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
-      <Stack.Screen 
+    <SafeAreaView style={styles.container} edges={["bottom"]}>
+      <Stack.Screen
         options={{
-          title: 'Payment Methods',
+          title: "Payment Methods",
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <ArrowLeft size={24} color={Colors.neutral.black} />
             </TouchableOpacity>
           ),
-        }} 
+        }}
       />
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         <Text style={styles.sectionTitle}>Your Payment Methods</Text>
-        
-        {paymentMethods.map(method => (
+
+        {paymentMethods.map((method) => (
           <View key={method.id} style={styles.paymentCard}>
             <View style={styles.cardHeader}>
-              <Image 
-                source={{ uri: getCardImage(method.type) }} 
-                style={styles.cardLogo} 
+              <Image
+                source={{ uri: getCardImage(method.type) }}
+                style={styles.cardLogo}
                 resizeMode="contain"
               />
               {method.isDefault && (
@@ -88,13 +106,15 @@ export default function PaymentMethodsScreen() {
                 </View>
               )}
             </View>
-            
+
             <Text style={styles.cardNumber}>•••• •••• •••• {method.last4}</Text>
-            <Text style={styles.cardExpiry}>Expires {method.expMonth}/{method.expYear}</Text>
-            
+            <Text style={styles.cardExpiry}>
+              Expires {method.expMonth}/{method.expYear}
+            </Text>
+
             <View style={styles.cardActions}>
               {!method.isDefault && (
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.cardAction}
                   onPress={() => handleSetDefault(method.id)}
                 >
@@ -102,8 +122,8 @@ export default function PaymentMethodsScreen() {
                   <Text style={styles.cardActionText}>Set as Default</Text>
                 </TouchableOpacity>
               )}
-              
-              <TouchableOpacity 
+
+              <TouchableOpacity
                 style={[styles.cardAction, styles.deleteAction]}
                 onPress={() => handleDeletePaymentMethod(method.id)}
               >
@@ -113,19 +133,24 @@ export default function PaymentMethodsScreen() {
             </View>
           </View>
         ))}
-        
-        <TouchableOpacity 
+
+        <TouchableOpacity
           style={styles.addPaymentButton}
           onPress={handleAddPaymentMethod}
         >
           <Plus size={20} color={Colors.primary.burgundy} />
           <Text style={styles.addPaymentText}>Add Payment Method</Text>
         </TouchableOpacity>
-        
+
         <View style={styles.infoSection}>
-          <CreditCard size={20} color={Colors.neutral.gray} style={styles.infoIcon} />
+          <CreditCard
+            size={20}
+            color={Colors.neutral.gray}
+            style={styles.infoIcon}
+          />
           <Text style={styles.infoText}>
-            Your payment information is securely stored and processed. We do not store your full card details on our servers.
+            Your payment information is securely stored and processed. We do not
+            store your full card details on our servers.
           </Text>
         </View>
       </ScrollView>
@@ -144,7 +169,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
     marginBottom: 16,
   },
@@ -162,9 +187,9 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 12,
   },
   cardLogo: {
@@ -180,11 +205,11 @@ const styles = StyleSheet.create({
   defaultText: {
     fontSize: 12,
     color: Colors.primary.burgundy,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   cardNumber: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
     marginBottom: 8,
   },
@@ -194,15 +219,15 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   cardActions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "flex-end",
     borderTopWidth: 1,
     borderTopColor: Colors.neutral.extraLightGray,
     paddingTop: 12,
   },
   cardAction: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginLeft: 16,
   },
   cardActionText: {
@@ -219,9 +244,9 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   addPaymentButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: Colors.neutral.white,
     borderWidth: 1,
     borderColor: Colors.primary.burgundy,
@@ -232,11 +257,11 @@ const styles = StyleSheet.create({
   addPaymentText: {
     fontSize: 16,
     color: Colors.primary.burgundy,
-    fontWeight: '500',
+    fontWeight: "500",
     marginLeft: 8,
   },
   infoSection: {
-    flexDirection: 'row',
+    flexDirection: "row",
     backgroundColor: Colors.neutral.extraLightGray,
     borderRadius: 12,
     padding: 16,

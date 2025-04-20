@@ -3,7 +3,7 @@ export interface User {
   name: string;
   email: string;
   businessName?: string;
-  userType: 'business' | 'supplier' | 'distributor' | 'organizer';
+  userType: "business" | "supplier" | "organizer";
   avatar?: string;
 }
 
@@ -37,7 +37,7 @@ export interface Supplier {
   image?: string; // Added image property
   categories: string[];
   rating: number;
-  productsCount: number;
+  productsCount?: number;
 }
 
 export interface Order {
@@ -45,11 +45,18 @@ export interface Order {
   supplierId: string;
   supplierName: string;
   businessName?: string; // Added businessName property
-  status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled' | 'new' | 'processing';
+  status:
+    | "pending"
+    | "confirmed"
+    | "shipped"
+    | "delivered"
+    | "cancelled"
+    | "new"
+    | "processing";
   items: OrderItem[];
   totalAmount: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
   orderDate: string; // Added orderDate property
   estimatedDelivery?: string;
   expectedDelivery?: string; // Added expectedDelivery property
@@ -57,7 +64,7 @@ export interface Order {
 }
 
 export interface OrderItem {
-  image: string | undefined;
+  image?: string | undefined;
   productId: string;
   productName: string;
   quantity: number;
@@ -76,7 +83,7 @@ export interface Event {
   image?: string;
   category?: string; // Added category property
   price?: number; // Added price property
-  status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
+  status: "upcoming" | "ongoing" | "completed" | "cancelled" | "past";
   attendees?: number;
   isBooked?: boolean;
   isRegistered?: boolean;
@@ -86,9 +93,20 @@ export interface Notification {
   id: string;
   title: string;
   message: string;
-  type: 'info' | 'warning' | 'success' | 'error';
+  type:
+    | "info"
+    | "warning"
+    | "success"
+    | "error"
+    | "inventory"
+    | "order"
+    | "event"
+    | "system";
   read: boolean;
-  createdAt: string;
+  createdAt?: string;
+  date: string;
+  actionId?: string;
+  actionType?: string;
 }
 
 export interface DashboardStats {
@@ -100,11 +118,13 @@ export interface DashboardStats {
   monthlySales?: MonthlySales[];
   topSellingProducts?: TopSellingProduct[];
   recentOrders?: Order[];
-  topProducts?: { // Added topProducts property
+  topProducts?: {
+    // Added topProducts property
     name: string;
     quantity: number;
   }[];
-  recentSales?: { // Added recentSales property
+  recentSales?: {
+    // Added recentSales property
     amount: number;
     change: number;
   };

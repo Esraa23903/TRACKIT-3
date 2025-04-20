@@ -1,42 +1,48 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Stack, useRouter } from 'expo-router';
-import Colors from '@/constants/colors';
-import { orders } from '@/mocks/orders';
-import OrderCard from '@/components/OrderCard'; // Fixed import statement
-import { ArrowLeft, ShoppingCart } from 'lucide-react-native';
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Stack, useRouter } from "expo-router";
+import Colors from "@/constants/colors";
+import { orders } from "@/mocks/orders";
+import OrderCard from "@/components/OrderCard"; // Fixed import statement
+import { ArrowLeft, ShoppingCart } from "lucide-react-native";
 
 // HIGHLIGHT: New screen for pending orders
 export default function PendingOrdersScreen() {
   const router = useRouter();
-  
+
   // Filter pending orders
-  const pendingOrders = orders.filter(order => 
-    order.status === 'pending' || order.status === 'processing'
+  const pendingOrders = orders.filter(
+    (order) => order.status === "pending" || order.status === "processing"
   );
 
   const handleOrderPress = (orderId: string) => {
     router.push({
-      pathname: '/order-details',
-      params: { id: orderId }
+      pathname: "/order-details",
+      params: { id: orderId },
     });
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
-      <Stack.Screen 
+    <SafeAreaView style={styles.container} edges={["bottom"]}>
+      <Stack.Screen
         options={{
-          title: 'Pending Orders',
+          title: "Pending Orders",
           headerShadowVisible: false,
           headerStyle: { backgroundColor: Colors.neutral.extraLightGray },
-          headerTitleStyle: { color: Colors.neutral.black, fontWeight: '600' },
+          headerTitleStyle: { color: Colors.neutral.black, fontWeight: "600" },
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <ArrowLeft size={24} color={Colors.neutral.black} />
             </TouchableOpacity>
           ),
-        }} 
+        }}
       />
 
       <View style={styles.header}>
@@ -48,10 +54,7 @@ export default function PendingOrdersScreen() {
       <FlatList
         data={pendingOrders}
         renderItem={({ item }) => (
-          <OrderCard 
-            order={item} 
-            onPress={() => handleOrderPress(item.id)} 
-          />
+          <OrderCard order={item} onPress={() => handleOrderPress(item.id)} />
         )}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
@@ -60,15 +63,17 @@ export default function PendingOrdersScreen() {
           <View style={styles.emptyContainer}>
             <ShoppingCart size={48} color={Colors.neutral.lightGray} />
             <Text style={styles.emptyText}>No Pending Orders</Text>
-            <Text style={styles.emptySubtext}>All your orders have been fulfilled</Text>
+            <Text style={styles.emptySubtext}>
+              All your orders have been fulfilled
+            </Text>
           </View>
         )}
       />
 
       <View style={styles.footer}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.newOrderButton}
-          onPress={() => router.push('/new-order')}
+          onPress={() => router.push("/new-order")}
         >
           <Text style={styles.newOrderButtonText}>Create New Order</Text>
         </TouchableOpacity>
@@ -95,14 +100,14 @@ const styles = StyleSheet.create({
     paddingTop: 0,
   },
   emptyContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: 24,
     marginTop: 40,
   },
   emptyText: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.darkGray,
     marginTop: 16,
     marginBottom: 8,
@@ -110,7 +115,7 @@ const styles = StyleSheet.create({
   emptySubtext: {
     fontSize: 14,
     color: Colors.neutral.gray,
-    textAlign: 'center',
+    textAlign: "center",
   },
   footer: {
     padding: 16,
@@ -122,11 +127,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary.burgundy,
     borderRadius: 12,
     padding: 16,
-    alignItems: 'center',
+    alignItems: "center",
   },
   newOrderButtonText: {
     color: Colors.neutral.white,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });

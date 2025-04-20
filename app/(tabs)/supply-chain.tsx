@@ -1,110 +1,138 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import Colors from '@/constants/colors';
-import { suppliers } from '@/mocks/suppliers';
-import { orders } from '@/mocks/orders';
-import { Supplier, Order } from '@/types';
-import { Star, Phone, Mail, Package, Truck, ShoppingCart } from 'lucide-react-native';
-import { useAuthStore } from '@/store/auth-store';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  Alert,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import Colors from "@/constants/colors";
+import { suppliers } from "@/mocks/suppliers";
+import { orders } from "@/mocks/orders";
+import { Supplier, Order } from "@/types";
+import {
+  Star,
+  Phone,
+  Mail,
+  Package,
+  Truck,
+  ShoppingCart,
+} from "lucide-react-native";
+import { useAuthStore } from "@/store/auth-store";
 
 export default function SupplyChainScreen() {
   const router = useRouter();
   const { hasPermission } = useAuthStore();
-  const [activeTab, setActiveTab] = useState('suppliers');
-  
+  const [activeTab, setActiveTab] = useState("suppliers");
+
   const handleSupplierPress = (supplier: Supplier) => {
     // Navigate to supplier details
     router.push({
-      pathname: '/supplier-details',
-      params: { id: supplier.id }
+      pathname: "/supplier-details",
+      params: { id: supplier.id },
     });
   };
 
   const handleOrderPress = (order: Order) => {
     // HIGHLIGHT: Navigate to shipment tracking screen
-    if (order.status !== 'pending') {
+    if (order.status !== "pending") {
       router.push({
-        pathname: '/shipment-tracking',
-        params: { id: order.id }
+        pathname: "/shipment-tracking",
+        params: { id: order.id },
       });
     } else {
       // For pending orders, we might show a different screen or message
       router.push({
-        pathname: '/order-details',
-        params: { id: order.id }
+        pathname: "/order-details",
+        params: { id: order.id },
       });
     }
   };
 
   const handlePlaceOrder = (supplier: Supplier) => {
-    if (!hasPermission('place_order')) {
-      Alert.alert('Permission Denied', 'You do not have permission to place orders');
+    if (!hasPermission("place_order")) {
+      Alert.alert(
+        "Permission Denied",
+        "You do not have permission to place orders"
+      );
       return;
     }
-    
+
     // Navigate to place order screen
     router.push({
-      pathname: '/new-order',
-      params: { supplierId: supplier.id }
+      pathname: "/new-order",
+      params: { supplierId: supplier.id },
     });
   };
 
-  const handleContactSupplier = (method: 'phone' | 'email', supplier: Supplier) => {
-    if (method === 'phone') {
+  const handleContactSupplier = (
+    method: "phone" | "email",
+    supplier: Supplier
+  ) => {
+    if (method === "phone") {
       Alert.alert(
-        'Contact Supplier',
+        "Contact Supplier",
         `Call ${supplier.name} at ${supplier.phone}?`,
         [
           {
-            text: 'Cancel',
-            style: 'cancel'
+            text: "Cancel",
+            style: "cancel",
           },
           {
-            text: 'Call',
-            onPress: () => console.log('Calling supplier:', supplier.phone)
-          }
+            text: "Call",
+            onPress: () => console.log("Calling supplier:", supplier.phone),
+          },
         ]
       );
     } else {
       Alert.alert(
-        'Contact Supplier',
+        "Contact Supplier",
         `Email ${supplier.name} at ${supplier.email}?`,
         [
           {
-            text: 'Cancel',
-            style: 'cancel'
+            text: "Cancel",
+            style: "cancel",
           },
           {
-            text: 'Email',
-            onPress: () => console.log('Emailing supplier:', supplier.email)
-          }
+            text: "Email",
+            onPress: () => console.log("Emailing supplier:", supplier.email),
+          },
         ]
       );
     }
   };
 
   const renderSupplierCard = ({ item }: { item: Supplier }) => (
-    <TouchableOpacity 
-      style={styles.supplierCard} 
+    <TouchableOpacity
+      style={styles.supplierCard}
       onPress={() => handleSupplierPress(item)}
       activeOpacity={0.7}
     >
-      <Image 
-        source={{ uri: item.image || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0'
-        }} 
-        style={styles.supplierImage} 
+      <Image
+        source={{
+          uri:
+            item.image ||
+            "https://images.unsplash.com/photo-1542744173-8e7e53415bb0",
+        }}
+        style={styles.supplierImage}
         resizeMode="cover"
       />
       <View style={styles.supplierContent}>
         <Text style={styles.supplierName}>{item.name}</Text>
-        
+
         <View style={styles.ratingContainer}>
-          <Star size={16} color={Colors.status.warning} fill={Colors.status.warning} />
+          <Star
+            size={16}
+            color={Colors.status.warning}
+            fill={Colors.status.warning}
+          />
           <Text style={styles.ratingText}>{item.rating.toFixed(1)}</Text>
         </View>
-        
+
         <View style={styles.categoriesContainer}>
           {item.categories.slice(0, 2).map((category, index) => (
             <View key={index} style={styles.categoryBadge}>
@@ -113,25 +141,27 @@ export default function SupplyChainScreen() {
           ))}
           {item.categories.length > 2 && (
             <View style={styles.categoryBadge}>
-              <Text style={styles.categoryText}>+{item.categories.length - 2}</Text>
+              <Text style={styles.categoryText}>
+                +{item.categories.length - 2}
+              </Text>
             </View>
           )}
         </View>
-        
+
         <View style={styles.contactContainer}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.contactButton}
-            onPress={() => handleContactSupplier('phone', item)}
+            onPress={() => handleContactSupplier("phone", item)}
           >
             <Phone size={16} color={Colors.primary.burgundy} />
           </TouchableOpacity>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.contactButton}
-            onPress={() => handleContactSupplier('email', item)}
+            onPress={() => handleContactSupplier("email", item)}
           >
             <Mail size={16} color={Colors.primary.burgundy} />
           </TouchableOpacity>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[styles.contactButton, styles.orderButton]}
             onPress={() => handlePlaceOrder(item)}
           >
@@ -145,15 +175,15 @@ export default function SupplyChainScreen() {
   const renderOrderCard = ({ item }: { item: Order }) => {
     const getStatusColor = (status: string) => {
       switch (status) {
-        case 'delivered':
+        case "delivered":
           return Colors.status.success;
-        case 'shipped':
+        case "shipped":
           return Colors.status.info;
-        case 'processing':
+        case "processing":
           return Colors.status.warning;
-        case 'pending':
+        case "pending":
           return Colors.neutral.gray;
-        case 'cancelled':
+        case "cancelled":
           return Colors.status.error;
         default:
           return Colors.neutral.gray;
@@ -162,15 +192,15 @@ export default function SupplyChainScreen() {
 
     const getStatusIcon = (status: string) => {
       switch (status) {
-        case 'delivered':
+        case "delivered":
           return <Package size={16} color={Colors.status.success} />;
-        case 'shipped':
+        case "shipped":
           return <Truck size={16} color={Colors.status.info} />;
-        case 'processing':
+        case "processing":
           return <ShoppingCart size={16} color={Colors.status.warning} />;
-        case 'pending':
+        case "pending":
           return <ShoppingCart size={16} color={Colors.neutral.gray} />;
-        case 'cancelled':
+        case "cancelled":
           return <ShoppingCart size={16} color={Colors.status.error} />;
         default:
           return <ShoppingCart size={16} color={Colors.neutral.gray} />;
@@ -178,31 +208,45 @@ export default function SupplyChainScreen() {
     };
 
     const formatDate = (dateString: string) => {
-      const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
-      return new Date(dateString).toLocaleDateString('en-US', options);
+      const options: Intl.DateTimeFormatOptions = {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      };
+      return new Date(dateString).toLocaleDateString("en-US", options);
     };
 
     return (
-      <TouchableOpacity 
-        style={styles.orderCard} 
+      <TouchableOpacity
+        style={styles.orderCard}
         onPress={() => handleOrderPress(item)}
         activeOpacity={0.7}
       >
         <View style={styles.orderHeader}>
           <Text style={styles.orderNumber}>Order #{item.id}</Text>
-          <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) + '20' }]}>
+          <View
+            style={[
+              styles.statusBadge,
+              { backgroundColor: getStatusColor(item.status) + "20" },
+            ]}
+          >
             {getStatusIcon(item.status)}
-            <Text style={[styles.statusText, { color: getStatusColor(item.status) }]}>
+            <Text
+              style={[
+                styles.statusText,
+                { color: getStatusColor(item.status) },
+              ]}
+            >
               {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
             </Text>
           </View>
         </View>
-        
+
         <View style={styles.orderDetails}>
           <Text style={styles.supplierName}>{item.supplierName}</Text>
           <Text style={styles.orderDate}>{formatDate(item.orderDate)}</Text>
         </View>
-        
+
         <View style={styles.orderItems}>
           {item.items.map((orderItem, index) => (
             <Text key={index} style={styles.orderItemText} numberOfLines={1}>
@@ -210,28 +254,30 @@ export default function SupplyChainScreen() {
             </Text>
           ))}
         </View>
-        
+
         <View style={styles.orderFooter}>
           <Text style={styles.totalLabel}>Total:</Text>
           <Text style={styles.totalAmount}>${item.totalAmount.toFixed(2)}</Text>
         </View>
-        
+
         {/* HIGHLIGHT: Added tracking info for shipped/delivered orders */}
-        {(item.status === 'shipped' || item.status === 'delivered') && (
+        {(item.status === "shipped" || item.status === "delivered") && (
           <View style={styles.trackingInfo}>
             <View style={styles.trackingHeader}>
               <Truck size={16} color={Colors.primary.burgundy} />
               <Text style={styles.trackingTitle}>Shipment Tracking</Text>
             </View>
             {item.trackingNumber && (
-              <Text style={styles.trackingNumber}>Tracking #: {item.trackingNumber}</Text>
+              <Text style={styles.trackingNumber}>
+                Tracking #: {item.trackingNumber}
+              </Text>
             )}
             {item.expectedDelivery && (
               <Text style={styles.deliveryDate}>
                 Expected delivery: {formatDate(item.expectedDelivery)}
               </Text>
             )}
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.trackButton}
               onPress={() => handleOrderPress(item)}
             >
@@ -244,32 +290,42 @@ export default function SupplyChainScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
+    <SafeAreaView style={styles.container} edges={["bottom"]}>
       <View style={styles.header}>
         <Text style={styles.title}>Supply Chain</Text>
-        
+
         <View style={styles.tabContainer}>
-          <TouchableOpacity 
-            style={[styles.tab, activeTab === 'suppliers' && styles.activeTab]} 
-            onPress={() => setActiveTab('suppliers')}
+          <TouchableOpacity
+            style={[styles.tab, activeTab === "suppliers" && styles.activeTab]}
+            onPress={() => setActiveTab("suppliers")}
           >
-            <Text style={[styles.tabText, activeTab === 'suppliers' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === "suppliers" && styles.activeTabText,
+              ]}
+            >
               Suppliers
             </Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={[styles.tab, activeTab === 'orders' && styles.activeTab]} 
-            onPress={() => setActiveTab('orders')}
+
+          <TouchableOpacity
+            style={[styles.tab, activeTab === "orders" && styles.activeTab]}
+            onPress={() => setActiveTab("orders")}
           >
-            <Text style={[styles.tabText, activeTab === 'orders' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === "orders" && styles.activeTabText,
+              ]}
+            >
               Orders
             </Text>
           </TouchableOpacity>
         </View>
       </View>
 
-      {activeTab === 'suppliers' ? (
+      {activeTab === "suppliers" ? (
         <FlatList
           data={suppliers}
           renderItem={renderSupplierCard}
@@ -300,12 +356,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.neutral.black,
     marginBottom: 16,
   },
   tabContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     backgroundColor: Colors.neutral.white,
     borderRadius: 12,
     padding: 4,
@@ -314,7 +370,7 @@ const styles = StyleSheet.create({
   tab: {
     flex: 1,
     paddingVertical: 8,
-    alignItems: 'center',
+    alignItems: "center",
     borderRadius: 8,
   },
   activeTab: {
@@ -322,7 +378,7 @@ const styles = StyleSheet.create({
   },
   tabText: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
     color: Colors.neutral.gray,
   },
   activeTabText: {
@@ -336,7 +392,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.neutral.white,
     borderRadius: 16,
     marginBottom: 16,
-    overflow: 'hidden',
+    overflow: "hidden",
     shadowColor: Colors.neutral.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
@@ -344,7 +400,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   supplierImage: {
-    width: '100%',
+    width: "100%",
     height: 120,
   },
   supplierContent: {
@@ -352,23 +408,23 @@ const styles = StyleSheet.create({
   },
   supplierName: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
     marginBottom: 8,
   },
   ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 12,
   },
   ratingText: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
     color: Colors.neutral.darkGray,
     marginLeft: 4,
   },
   categoriesContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 16,
   },
   categoryBadge: {
@@ -383,29 +439,29 @@ const styles = StyleSheet.create({
     color: Colors.neutral.darkGray,
   },
   contactContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   contactButton: {
     width: 36,
     height: 36,
     borderRadius: 18,
     backgroundColor: Colors.neutral.extraLightGray,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: 12,
   },
   orderButton: {
-    width: 'auto',
+    width: "auto",
     paddingHorizontal: 16,
     backgroundColor: Colors.primary.burgundy,
-    marginLeft: 'auto',
+    marginLeft: "auto",
     marginRight: 0,
   },
   orderButtonText: {
     color: Colors.neutral.white,
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   orderCard: {
     backgroundColor: Colors.neutral.white,
@@ -419,32 +475,32 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   orderHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 12,
   },
   orderNumber: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
   },
   statusBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
   },
   statusText: {
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: "500",
     marginLeft: 4,
   },
   orderDetails: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 12,
   },
   orderDate: {
@@ -460,9 +516,9 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   orderFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingTop: 12,
     borderTopWidth: 1,
     borderTopColor: Colors.neutral.extraLightGray,
@@ -473,7 +529,7 @@ const styles = StyleSheet.create({
   },
   totalAmount: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.primary.burgundy,
   },
   // HIGHLIGHT: Added styles for tracking information
@@ -484,13 +540,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   trackingHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 8,
   },
   trackingTitle: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
     marginLeft: 8,
   },
@@ -509,11 +565,11 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 6,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
   },
   trackButtonText: {
     color: Colors.neutral.white,
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: "500",
   },
 });

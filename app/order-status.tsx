@@ -1,39 +1,48 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { Stack, useRouter, useLocalSearchParams } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Colors from '@/constants/colors';
-import { ArrowLeft, CheckCircle, Clock, Truck, Calendar, Package } from 'lucide-react-native';
-import { suppliers } from '@/mocks/suppliers';
+import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { Stack, useRouter, useLocalSearchParams } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Colors from "@/constants/colors";
+import {
+  ArrowLeft,
+  CheckCircle,
+  Clock,
+  Truck,
+  Calendar,
+  Package,
+} from "lucide-react-native";
+import { suppliers } from "@/mocks/suppliers";
 
 export default function OrderStatusScreen() {
   const router = useRouter();
   const { supplierId, orderId } = useLocalSearchParams();
-  
+
   // Find supplier
-  const supplier = suppliers.find(s => s.id === supplierId);
-  
+  const supplier = suppliers.find((s) => s.id === supplierId);
+
   // Mock order data
   const orderData = {
-    id: orderId || 'ORD-' + Math.floor(Math.random() * 10000),
-    status: 'pending',
+    id: orderId || "ORD-" + Math.floor(Math.random() * 10000),
+    status: "pending",
     date: new Date().toISOString(),
-    estimatedDelivery: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+    estimatedDelivery: new Date(
+      Date.now() + 7 * 24 * 60 * 60 * 1000
+    ).toISOString(),
     items: [
-      { name: 'Coffee Beans - Dark Roast', quantity: 5, price: 12.99 },
-      { name: 'Organic Tea Assortment', quantity: 2, price: 18.50 },
-      { name: 'Specialty Sugar', quantity: 3, price: 8.75 }
+      { name: "Coffee Beans - Dark Roast", quantity: 5, price: 12.99 },
+      { name: "Organic Tea Assortment", quantity: 2, price: 18.5 },
+      { name: "Specialty Sugar", quantity: 3, price: 8.75 },
     ],
-    total: 114.20
+    total: 114.2,
   };
 
   const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     };
-    return new Date(dateString).toLocaleDateString('en-US', options);
+    return new Date(dateString).toLocaleDateString("en-US", options);
   };
 
   const handleViewOrderDetails = () => {
@@ -43,22 +52,22 @@ export default function OrderStatusScreen() {
 
   const handleContactSupplier = () => {
     if (!supplier) return;
-    
+
     // Navigate back to supplier details
     router.push(`/supplier-details?id=${supplierId}`);
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
-      <Stack.Screen 
+    <SafeAreaView style={styles.container} edges={["bottom"]}>
+      <Stack.Screen
         options={{
-          title: 'Order Status',
+          title: "Order Status",
           headerLeft: () => (
-            <TouchableOpacity onPress={() => router.push('/(tabs)')}>
+            <TouchableOpacity onPress={() => router.push("/(tabs)")}>
               <ArrowLeft size={24} color={Colors.neutral.black} />
             </TouchableOpacity>
           ),
-        }} 
+        }}
       />
 
       <View style={styles.content}>
@@ -67,103 +76,128 @@ export default function OrderStatusScreen() {
             <CheckCircle size={64} color={Colors.status.success} />
             <Text style={styles.statusTitle}>Order Placed Successfully!</Text>
             <Text style={styles.statusMessage}>
-              Your order has been received and is awaiting approval from the supplier.
+              Your order has been received and is awaiting approval from the
+              supplier.
             </Text>
           </View>
-          
+
           <View style={styles.orderInfo}>
             <Text style={styles.orderInfoLabel}>Order Number:</Text>
             <Text style={styles.orderInfoValue}>{orderData.id}</Text>
           </View>
-          
+
           <View style={styles.orderInfo}>
             <Text style={styles.orderInfoLabel}>Order Date:</Text>
-            <Text style={styles.orderInfoValue}>{formatDate(orderData.date)}</Text>
+            <Text style={styles.orderInfoValue}>
+              {formatDate(orderData.date)}
+            </Text>
           </View>
-          
+
           <View style={styles.orderInfo}>
             <Text style={styles.orderInfoLabel}>Estimated Delivery:</Text>
-            <Text style={styles.orderInfoValue}>{formatDate(orderData.estimatedDelivery)}</Text>
+            <Text style={styles.orderInfoValue}>
+              {formatDate(orderData.estimatedDelivery)}
+            </Text>
           </View>
-          
+
           <View style={styles.orderInfo}>
             <Text style={styles.orderInfoLabel}>Total Amount:</Text>
-            <Text style={styles.orderInfoValue}>${orderData.total.toFixed(2)}</Text>
+            <Text style={styles.orderInfoValue}>
+              ${orderData.total.toFixed(2)}
+            </Text>
           </View>
         </View>
-        
+
         <View style={styles.statusTimeline}>
           <Text style={styles.timelineTitle}>Order Status</Text>
-          
+
           <View style={styles.timelineItem}>
             <View style={[styles.timelineIcon, styles.completedIcon]}>
               <CheckCircle size={24} color={Colors.neutral.white} />
             </View>
             <View style={styles.timelineContent}>
               <Text style={styles.timelineItemTitle}>Order Placed</Text>
-              <Text style={styles.timelineItemDate}>{formatDate(orderData.date)}</Text>
+              <Text style={styles.timelineItemDate}>
+                {formatDate(orderData.date)}
+              </Text>
             </View>
           </View>
-          
+
           <View style={[styles.timelineLine, styles.activeLine]} />
-          
+
           <View style={styles.timelineItem}>
             <View style={[styles.timelineIcon, styles.activeIcon]}>
               <Clock size={24} color={Colors.neutral.white} />
             </View>
             <View style={styles.timelineContent}>
               <Text style={styles.timelineItemTitle}>Awaiting Approval</Text>
-              <Text style={styles.timelineItemDate}>Pending supplier confirmation</Text>
+              <Text style={styles.timelineItemDate}>
+                Pending supplier confirmation
+              </Text>
             </View>
           </View>
-          
+
           <View style={[styles.timelineLine, styles.inactiveLine]} />
-          
+
           <View style={styles.timelineItem}>
             <View style={[styles.timelineIcon, styles.inactiveIcon]}>
               <Package size={24} color={Colors.neutral.lightGray} />
             </View>
             <View style={styles.timelineContent}>
-              <Text style={[styles.timelineItemTitle, styles.inactiveText]}>Processing</Text>
-              <Text style={[styles.timelineItemDate, styles.inactiveText]}>Order preparation</Text>
+              <Text style={[styles.timelineItemTitle, styles.inactiveText]}>
+                Processing
+              </Text>
+              <Text style={[styles.timelineItemDate, styles.inactiveText]}>
+                Order preparation
+              </Text>
             </View>
           </View>
-          
+
           <View style={[styles.timelineLine, styles.inactiveLine]} />
-          
+
           <View style={styles.timelineItem}>
             <View style={[styles.timelineIcon, styles.inactiveIcon]}>
               <Truck size={24} color={Colors.neutral.lightGray} />
             </View>
             <View style={styles.timelineContent}>
-              <Text style={[styles.timelineItemTitle, styles.inactiveText]}>Shipping</Text>
-              <Text style={[styles.timelineItemDate, styles.inactiveText]}>Order in transit</Text>
+              <Text style={[styles.timelineItemTitle, styles.inactiveText]}>
+                Shipping
+              </Text>
+              <Text style={[styles.timelineItemDate, styles.inactiveText]}>
+                Order in transit
+              </Text>
             </View>
           </View>
-          
+
           <View style={[styles.timelineLine, styles.inactiveLine]} />
-          
+
           <View style={styles.timelineItem}>
             <View style={[styles.timelineIcon, styles.inactiveIcon]}>
               <Calendar size={24} color={Colors.neutral.lightGray} />
             </View>
             <View style={styles.timelineContent}>
-              <Text style={[styles.timelineItemTitle, styles.inactiveText]}>Delivered</Text>
+              <Text style={[styles.timelineItemTitle, styles.inactiveText]}>
+                Delivered
+              </Text>
               <Text style={[styles.timelineItemDate, styles.inactiveText]}>
                 Estimated: {formatDate(orderData.estimatedDelivery)}
               </Text>
             </View>
           </View>
         </View>
-        
+
         {supplier && (
           <View style={styles.supplierCard}>
             <Text style={styles.supplierTitle}>Supplier Information</Text>
-            
+
             <View style={styles.supplierInfo}>
-              <Image 
-                source={{ uri: supplier.image || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0' }} 
-                style={styles.supplierImage} 
+              <Image
+                source={{
+                  uri:
+                    supplier.image ||
+                    "https://images.unsplash.com/photo-1542744173-8e7e53415bb0",
+                }}
+                style={styles.supplierImage}
               />
               <View style={styles.supplierDetails}>
                 <Text style={styles.supplierName}>{supplier.name}</Text>
@@ -174,16 +208,16 @@ export default function OrderStatusScreen() {
           </View>
         )}
       </View>
-      
+
       <View style={styles.footer}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.secondaryButton}
           onPress={handleViewOrderDetails}
         >
           <Text style={styles.secondaryButtonText}>View Order Details</Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
+
+        <TouchableOpacity
           style={styles.primaryButton}
           onPress={handleContactSupplier}
         >
@@ -215,26 +249,26 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   statusHeader: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 24,
   },
   statusTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.neutral.black,
     marginTop: 16,
     marginBottom: 8,
-    textAlign: 'center',
+    textAlign: "center",
   },
   statusMessage: {
     fontSize: 16,
     color: Colors.neutral.gray,
-    textAlign: 'center',
+    textAlign: "center",
     lineHeight: 22,
   },
   orderInfo: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 12,
   },
   orderInfoLabel: {
@@ -243,7 +277,7 @@ const styles = StyleSheet.create({
   },
   orderInfoValue: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
     color: Colors.neutral.black,
   },
   statusTimeline: {
@@ -259,21 +293,21 @@ const styles = StyleSheet.create({
   },
   timelineTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
     marginBottom: 24,
   },
   timelineItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    alignItems: "flex-start",
     zIndex: 1,
   },
   timelineIcon: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: 16,
   },
   completedIcon: {
@@ -291,7 +325,7 @@ const styles = StyleSheet.create({
   },
   timelineItemTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
     marginBottom: 4,
   },
@@ -303,7 +337,7 @@ const styles = StyleSheet.create({
     color: Colors.neutral.lightGray,
   },
   timelineLine: {
-    position: 'absolute',
+    position: "absolute",
     width: 2,
     left: 19,
     top: 40,
@@ -330,13 +364,13 @@ const styles = StyleSheet.create({
   },
   supplierTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
     marginBottom: 16,
   },
   supplierInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   supplierImage: {
     width: 60,
@@ -349,7 +383,7 @@ const styles = StyleSheet.create({
   },
   supplierName: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
     marginBottom: 4,
   },
@@ -359,7 +393,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   footer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 16,
     backgroundColor: Colors.neutral.white,
     borderTopWidth: 1,
@@ -371,13 +405,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.primary.burgundy,
     borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: 8,
   },
   secondaryButtonText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.primary.burgundy,
   },
   primaryButton: {
@@ -385,13 +419,13 @@ const styles = StyleSheet.create({
     height: 56,
     backgroundColor: Colors.primary.burgundy,
     borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginLeft: 8,
   },
   primaryButtonText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.white,
   },
 });

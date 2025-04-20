@@ -1,36 +1,51 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import Colors from '@/constants/colors';
-import { useAuthStore } from '@/store/auth-store';
-import { supplierOrders } from '@/mocks/supplier-orders';
-import { Order } from '@/types';
-import { Package, Truck, ShoppingCart, Clock, AlertTriangle, CheckCircle, Plus } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import Colors from "@/constants/colors";
+import { useAuthStore } from "@/store/auth-store";
+import { supplierOrders } from "@/mocks/supplier-orders";
+import { Order } from "@/types";
+import {
+  Package,
+  Truck,
+  ShoppingCart,
+  Clock,
+  AlertTriangle,
+  CheckCircle,
+  Plus,
+} from "lucide-react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function SupplierDashboardScreen() {
   const { user } = useAuthStore();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState("all");
 
   // Filter orders based on active tab
-  const filteredOrders = supplierOrders.filter(order => {
-    if (activeTab === 'all') return true;
+  const filteredOrders = supplierOrders.filter((order) => {
+    if (activeTab === "all") return true;
     return order.status === activeTab;
   });
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'delivered':
+      case "delivered":
         return Colors.status.success;
-      case 'shipped':
+      case "shipped":
         return Colors.status.info;
-      case 'processing':
+      case "processing":
         return Colors.status.warning;
-      case 'pending':
+      case "pending":
         return Colors.neutral.gray;
-      case 'new':
+      case "new":
         return Colors.primary.burgundy;
       default:
         return Colors.neutral.gray;
@@ -39,15 +54,15 @@ export default function SupplierDashboardScreen() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'delivered':
+      case "delivered":
         return <CheckCircle size={20} color={Colors.status.success} />;
-      case 'shipped':
+      case "shipped":
         return <Truck size={20} color={Colors.status.info} />;
-      case 'processing':
+      case "processing":
         return <Package size={20} color={Colors.status.warning} />;
-      case 'pending':
+      case "pending":
         return <Clock size={20} color={Colors.neutral.gray} />;
-      case 'new':
+      case "new":
         return <AlertTriangle size={20} color={Colors.primary.burgundy} />;
       default:
         return <ShoppingCart size={20} color={Colors.neutral.gray} />;
@@ -55,39 +70,51 @@ export default function SupplierDashboardScreen() {
   };
 
   const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
-    return new Date(dateString).toLocaleDateString('en-US', options);
+    const options: Intl.DateTimeFormatOptions = {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    };
+    return new Date(dateString).toLocaleDateString("en-US", options);
   };
 
   const handleOrderPress = (order: Order) => {
     router.push({
-      pathname: '/order-details',
-      params: { id: order.id }
+      pathname: "/order-details",
+      params: { id: order.id },
     });
   };
 
   const renderOrderCard = ({ item }: { item: Order }) => (
-    <TouchableOpacity 
-      style={styles.orderCard} 
+    <TouchableOpacity
+      style={styles.orderCard}
       onPress={() => handleOrderPress(item)}
       activeOpacity={0.7}
     >
       <View style={styles.orderHeader}>
         <Text style={styles.orderNumber}>Order #{item.id}</Text>
-        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) + '20' }]}>
+        <View
+          style={[
+            styles.statusBadge,
+            { backgroundColor: getStatusColor(item.status) + "20" },
+          ]}
+        >
           {getStatusIcon(item.status)}
-          <Text style={[styles.statusText, { color: getStatusColor(item.status) }]}>
-            {item.status === 'new' ? 'New Order' : 
-             item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+          <Text
+            style={[styles.statusText, { color: getStatusColor(item.status) }]}
+          >
+            {item.status === "new"
+              ? "New Order"
+              : item.status.charAt(0).toUpperCase() + item.status.slice(1)}
           </Text>
         </View>
       </View>
-      
+
       <View style={styles.orderDetails}>
         <Text style={styles.businessName}>{item.businessName}</Text>
         <Text style={styles.orderDate}>{formatDate(item.orderDate)}</Text>
       </View>
-      
+
       <View style={styles.orderItems}>
         {item.items.map((orderItem, index) => (
           <Text key={index} style={styles.orderItemText} numberOfLines={1}>
@@ -95,31 +122,37 @@ export default function SupplierDashboardScreen() {
           </Text>
         ))}
       </View>
-      
+
       <View style={styles.orderFooter}>
         <Text style={styles.totalLabel}>Total:</Text>
         <Text style={styles.totalAmount}>${item.totalAmount.toFixed(2)}</Text>
       </View>
-      
+
       <View style={styles.actionButtons}>
-        {item.status === 'new' && (
+        {item.status === "new" && (
           <>
-            <TouchableOpacity style={[styles.actionButton, styles.acceptButton]}>
+            <TouchableOpacity
+              style={[styles.actionButton, styles.acceptButton]}
+            >
               <Text style={styles.actionButtonText}>Accept</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.actionButton, styles.rejectButton]}>
-              <Text style={[styles.actionButtonText, styles.rejectButtonText]}>Reject</Text>
+            <TouchableOpacity
+              style={[styles.actionButton, styles.rejectButton]}
+            >
+              <Text style={[styles.actionButtonText, styles.rejectButtonText]}>
+                Reject
+              </Text>
             </TouchableOpacity>
           </>
         )}
-        
-        {item.status === 'processing' && (
+
+        {item.status === "processing" && (
           <TouchableOpacity style={[styles.actionButton, styles.shipButton]}>
             <Text style={styles.actionButtonText}>Mark as Shipped</Text>
           </TouchableOpacity>
         )}
-        
-        {item.status === 'pending' && (
+
+        {item.status === "pending" && (
           <TouchableOpacity style={[styles.actionButton, styles.processButton]}>
             <Text style={styles.actionButtonText}>Process Order</Text>
           </TouchableOpacity>
@@ -129,60 +162,94 @@ export default function SupplierDashboardScreen() {
   );
 
   // Count orders by status
-  const newOrdersCount = supplierOrders.filter(order => order.status === 'new').length;
-  const pendingOrdersCount = supplierOrders.filter(order => order.status === 'pending').length;
-  const processingOrdersCount = supplierOrders.filter(order => order.status === 'processing').length;
-  const shippedOrdersCount = supplierOrders.filter(order => order.status === 'shipped').length;
+  const newOrdersCount = supplierOrders.filter(
+    (order) => order.status === "new"
+  ).length;
+  const pendingOrdersCount = supplierOrders.filter(
+    (order) => order.status === "pending"
+  ).length;
+  const processingOrdersCount = supplierOrders.filter(
+    (order) => order.status === "processing"
+  ).length;
+  const shippedOrdersCount = supplierOrders.filter(
+    (order) => order.status === "shipped"
+  ).length;
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
+    <SafeAreaView style={styles.container} edges={["bottom"]}>
       <View style={styles.header}>
         <View>
           <Text style={styles.greeting}>Hello, {user?.name}</Text>
-          <Text style={styles.businessName}>{user?.businessName || 'Your Business'}</Text>
+          <Text style={styles.businessName}>
+            {user?.businessName || "Your Business"}
+          </Text>
         </View>
       </View>
 
       <View style={styles.statsContainer}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.statsScroll}>
-          <TouchableOpacity 
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.statsScroll}
+        >
+          <TouchableOpacity
             style={styles.statCard}
-            onPress={() => setActiveTab('new')}
+            onPress={() => setActiveTab("new")}
           >
-            <View style={[styles.statIconContainer, { backgroundColor: Colors.primary.burgundy + '20' }]}>
+            <View
+              style={[
+                styles.statIconContainer,
+                { backgroundColor: Colors.primary.burgundy + "20" },
+              ]}
+            >
               <AlertTriangle size={24} color={Colors.primary.burgundy} />
             </View>
             <Text style={styles.statValue}>{newOrdersCount}</Text>
             <Text style={styles.statLabel}>New Orders</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={styles.statCard}
-            onPress={() => setActiveTab('pending')}
+            onPress={() => setActiveTab("pending")}
           >
-            <View style={[styles.statIconContainer, { backgroundColor: Colors.neutral.gray + '20' }]}>
+            <View
+              style={[
+                styles.statIconContainer,
+                { backgroundColor: Colors.neutral.gray + "20" },
+              ]}
+            >
               <Clock size={24} color={Colors.neutral.gray} />
             </View>
             <Text style={styles.statValue}>{pendingOrdersCount}</Text>
             <Text style={styles.statLabel}>Pending</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={styles.statCard}
-            onPress={() => setActiveTab('processing')}
+            onPress={() => setActiveTab("processing")}
           >
-            <View style={[styles.statIconContainer, { backgroundColor: Colors.status.warning + '20' }]}>
+            <View
+              style={[
+                styles.statIconContainer,
+                { backgroundColor: Colors.status.warning + "20" },
+              ]}
+            >
               <Package size={24} color={Colors.status.warning} />
             </View>
             <Text style={styles.statValue}>{processingOrdersCount}</Text>
             <Text style={styles.statLabel}>Processing</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={styles.statCard}
-            onPress={() => setActiveTab('shipped')}
+            onPress={() => setActiveTab("shipped")}
           >
-            <View style={[styles.statIconContainer, { backgroundColor: Colors.status.info + '20' }]}>
+            <View
+              style={[
+                styles.statIconContainer,
+                { backgroundColor: Colors.status.info + "20" },
+              ]}
+            >
               <Truck size={24} color={Colors.status.info} />
             </View>
             <Text style={styles.statValue}>{shippedOrdersCount}</Text>
@@ -193,56 +260,86 @@ export default function SupplierDashboardScreen() {
 
       <View style={styles.tabContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <TouchableOpacity 
-            style={[styles.tab, activeTab === 'all' && styles.activeTab]} 
-            onPress={() => setActiveTab('all')}
+          <TouchableOpacity
+            style={[styles.tab, activeTab === "all" && styles.activeTab]}
+            onPress={() => setActiveTab("all")}
           >
-            <Text style={[styles.tabText, activeTab === 'all' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === "all" && styles.activeTabText,
+              ]}
+            >
               All Orders
             </Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={[styles.tab, activeTab === 'new' && styles.activeTab]} 
-            onPress={() => setActiveTab('new')}
+
+          <TouchableOpacity
+            style={[styles.tab, activeTab === "new" && styles.activeTab]}
+            onPress={() => setActiveTab("new")}
           >
-            <Text style={[styles.tabText, activeTab === 'new' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === "new" && styles.activeTabText,
+              ]}
+            >
               New
             </Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={[styles.tab, activeTab === 'pending' && styles.activeTab]} 
-            onPress={() => setActiveTab('pending')}
+
+          <TouchableOpacity
+            style={[styles.tab, activeTab === "pending" && styles.activeTab]}
+            onPress={() => setActiveTab("pending")}
           >
-            <Text style={[styles.tabText, activeTab === 'pending' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === "pending" && styles.activeTabText,
+              ]}
+            >
               Pending
             </Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={[styles.tab, activeTab === 'processing' && styles.activeTab]} 
-            onPress={() => setActiveTab('processing')}
+
+          <TouchableOpacity
+            style={[styles.tab, activeTab === "processing" && styles.activeTab]}
+            onPress={() => setActiveTab("processing")}
           >
-            <Text style={[styles.tabText, activeTab === 'processing' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === "processing" && styles.activeTabText,
+              ]}
+            >
               Processing
             </Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={[styles.tab, activeTab === 'shipped' && styles.activeTab]} 
-            onPress={() => setActiveTab('shipped')}
+
+          <TouchableOpacity
+            style={[styles.tab, activeTab === "shipped" && styles.activeTab]}
+            onPress={() => setActiveTab("shipped")}
           >
-            <Text style={[styles.tabText, activeTab === 'shipped' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === "shipped" && styles.activeTabText,
+              ]}
+            >
               Shipped
             </Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={[styles.tab, activeTab === 'delivered' && styles.activeTab]} 
-            onPress={() => setActiveTab('delivered')}
+
+          <TouchableOpacity
+            style={[styles.tab, activeTab === "delivered" && styles.activeTab]}
+            onPress={() => setActiveTab("delivered")}
           >
-            <Text style={[styles.tabText, activeTab === 'delivered' && styles.activeTabText]}>
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === "delivered" && styles.activeTabText,
+              ]}
+            >
               Delivered
             </Text>
           </TouchableOpacity>
@@ -259,7 +356,9 @@ export default function SupplierDashboardScreen() {
           <View style={styles.emptyContainer}>
             <ShoppingCart size={48} color={Colors.neutral.lightGray} />
             <Text style={styles.emptyText}>No orders found</Text>
-            <Text style={styles.emptySubtext}>There are no orders in this category</Text>
+            <Text style={styles.emptySubtext}>
+              There are no orders in this category
+            </Text>
           </View>
         )}
       />
@@ -273,9 +372,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.neutral.extraLightGray,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 16,
   },
   greeting: {
@@ -284,7 +383,7 @@ const styles = StyleSheet.create({
   },
   businessName: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.neutral.black,
   },
   statsContainer: {
@@ -292,7 +391,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   statsScroll: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   statCard: {
     backgroundColor: Colors.neutral.white,
@@ -300,7 +399,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginRight: 12,
     width: 120,
-    alignItems: 'center',
+    alignItems: "center",
     shadowColor: Colors.neutral.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
@@ -311,13 +410,13 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 8,
   },
   statValue: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.neutral.black,
     marginBottom: 4,
   },
@@ -345,7 +444,7 @@ const styles = StyleSheet.create({
   },
   activeTabText: {
     color: Colors.neutral.white,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   listContent: {
     padding: 16,
@@ -363,32 +462,32 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   orderHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 12,
   },
   orderNumber: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
   },
   statusBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
   },
   statusText: {
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: "500",
     marginLeft: 4,
   },
   orderDetails: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 12,
   },
   orderDate: {
@@ -404,9 +503,9 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   orderFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingTop: 12,
     borderTopWidth: 1,
     borderTopColor: Colors.neutral.extraLightGray,
@@ -418,19 +517,19 @@ const styles = StyleSheet.create({
   },
   totalAmount: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.primary.burgundy,
   },
   actionButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   actionButton: {
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   acceptButton: {
     backgroundColor: Colors.status.success,
@@ -453,20 +552,20 @@ const styles = StyleSheet.create({
   },
   actionButtonText: {
     color: Colors.neutral.white,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   rejectButtonText: {
     color: Colors.status.error,
   },
   emptyContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: 24,
     marginTop: 40,
   },
   emptyText: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.darkGray,
     marginTop: 16,
     marginBottom: 8,
@@ -474,6 +573,6 @@ const styles = StyleSheet.create({
   emptySubtext: {
     fontSize: 14,
     color: Colors.neutral.gray,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });

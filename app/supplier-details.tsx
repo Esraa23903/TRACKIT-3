@@ -1,13 +1,31 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Alert, FlatList } from 'react-native';
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Colors from '@/constants/colors';
-import { suppliers } from '@/mocks/suppliers';
-import { products } from '@/mocks/products';
-import { ArrowLeft, Star, Phone, Mail, MapPin, ShoppingCart, Package, Tag } from 'lucide-react-native';
-import { useAuthStore } from '@/store/auth-store';
-import ProductCard from '@/components/ProductCard';
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  Alert,
+  FlatList,
+} from "react-native";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Colors from "@/constants/colors";
+import { suppliers } from "@/mocks/suppliers";
+import { products } from "@/mocks/products";
+import {
+  ArrowLeft,
+  Star,
+  Phone,
+  Mail,
+  MapPin,
+  ShoppingCart,
+  Package,
+  Tag,
+} from "lucide-react-native";
+import { useAuthStore } from "@/store/auth-store";
+import ProductCard from "@/components/ProductCard";
 
 export default function SupplierDetailsScreen() {
   const { id } = useLocalSearchParams();
@@ -15,28 +33,28 @@ export default function SupplierDetailsScreen() {
   const { hasPermission } = useAuthStore();
 
   // Find the supplier by ID
-  const supplier = suppliers.find(s => s.id === id);
+  const supplier = suppliers.find((s) => s.id === id);
 
   // Filter products by this supplier
-  const supplierProducts = products.filter(p => p.supplierId === id);
+  const supplierProducts = products.filter((p) => p.supplierId === id);
 
   if (!supplier) {
     return (
       <SafeAreaView style={styles.container}>
-        <Stack.Screen 
+        <Stack.Screen
           options={{
-            title: 'Supplier Not Found',
+            title: "Supplier Not Found",
             headerLeft: () => (
               <TouchableOpacity onPress={() => router.back()}>
                 <ArrowLeft size={24} color={Colors.neutral.black} />
               </TouchableOpacity>
             ),
-          }} 
+          }}
         />
         <View style={styles.notFoundContainer}>
           <Package size={64} color={Colors.neutral.lightGray} />
           <Text style={styles.notFoundText}>Supplier not found</Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.backButton}
             onPress={() => router.back()}
           >
@@ -47,46 +65,49 @@ export default function SupplierDetailsScreen() {
     );
   }
 
-  const handleContactSupplier = (method: 'phone' | 'email') => {
-    if (method === 'phone') {
+  const handleContactSupplier = (method: "phone" | "email") => {
+    if (method === "phone") {
       Alert.alert(
-        'Contact Supplier',
+        "Contact Supplier",
         `Call ${supplier.name} at ${supplier.phone}?`,
         [
           {
-            text: 'Cancel',
-            style: 'cancel'
+            text: "Cancel",
+            style: "cancel",
           },
           {
-            text: 'Call',
-            onPress: () => console.log('Calling supplier:', supplier.phone)
-          }
+            text: "Call",
+            onPress: () => console.log("Calling supplier:", supplier.phone),
+          },
         ]
       );
     } else {
       Alert.alert(
-        'Contact Supplier',
+        "Contact Supplier",
         `Email ${supplier.name} at ${supplier.email}?`,
         [
           {
-            text: 'Cancel',
-            style: 'cancel'
+            text: "Cancel",
+            style: "cancel",
           },
           {
-            text: 'Email',
-            onPress: () => console.log('Emailing supplier:', supplier.email)
-          }
+            text: "Email",
+            onPress: () => console.log("Emailing supplier:", supplier.email),
+          },
         ]
       );
     }
   };
 
   const handlePlaceOrder = () => {
-    if (!hasPermission('place_order')) {
-      Alert.alert('Permission Denied', 'You do not have permission to place orders');
+    if (!hasPermission("place_order")) {
+      Alert.alert(
+        "Permission Denied",
+        "You do not have permission to place orders"
+      );
       return;
     }
-    
+
     // Navigate to order information screen first
     router.push(`/order-information?supplierId=${supplier.id}`);
   };
@@ -96,89 +117,117 @@ export default function SupplierDetailsScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
-      <Stack.Screen 
+    <SafeAreaView style={styles.container} edges={["bottom"]}>
+      <Stack.Screen
         options={{
-          title: 'Supplier Details',
+          title: "Supplier Details",
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <ArrowLeft size={24} color={Colors.neutral.black} />
             </TouchableOpacity>
           ),
-        }} 
+        }}
       />
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <Image 
-          source={{ uri: supplier.image || 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0' }} 
-          style={styles.supplierImage} 
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
+        <Image
+          source={{
+            uri:
+              supplier.image ||
+              "https://images.unsplash.com/photo-1542744173-8e7e53415bb0",
+          }}
+          style={styles.supplierImage}
           resizeMode="cover"
         />
-        
+
         <View style={styles.supplierInfo}>
           <Text style={styles.supplierName}>{supplier.name}</Text>
-          
+
           <View style={styles.ratingContainer}>
-            <Star size={16} color={Colors.status.warning} fill={Colors.status.warning} />
+            <Star
+              size={16}
+              color={Colors.status.warning}
+              fill={Colors.status.warning}
+            />
             <Text style={styles.ratingText}>{supplier.rating.toFixed(1)}</Text>
-            <Text style={styles.productsCount}>({supplier.productsCount} products)</Text>
+            <Text style={styles.productsCount}>
+              ({supplier.productsCount} products)
+            </Text>
           </View>
-          
+
           <View style={styles.categoriesContainer}>
             {supplier.categories.map((category, index) => (
               <View key={index} style={styles.categoryBadge}>
-                <Tag size={14} color={Colors.neutral.darkGray} style={styles.categoryIcon} />
+                <Tag
+                  size={14}
+                  color={Colors.neutral.darkGray}
+                  style={styles.categoryIcon}
+                />
                 <Text style={styles.categoryText}>{category}</Text>
               </View>
             ))}
           </View>
-          
+
           <View style={styles.divider} />
-          
+
           <Text style={styles.sectionTitle}>Contact Information</Text>
-          
+
           <View style={styles.contactItem}>
-            <Phone size={20} color={Colors.primary.burgundy} style={styles.contactIcon} />
+            <Phone
+              size={20}
+              color={Colors.primary.burgundy}
+              style={styles.contactIcon}
+            />
             <Text style={styles.contactText}>{supplier.phone}</Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.contactButton}
-              onPress={() => handleContactSupplier('phone')}
+              onPress={() => handleContactSupplier("phone")}
             >
               <Text style={styles.contactButtonText}>Call</Text>
             </TouchableOpacity>
           </View>
-          
+
           <View style={styles.contactItem}>
-            <Mail size={20} color={Colors.primary.burgundy} style={styles.contactIcon} />
+            <Mail
+              size={20}
+              color={Colors.primary.burgundy}
+              style={styles.contactIcon}
+            />
             <Text style={styles.contactText}>{supplier.email}</Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.contactButton}
-              onPress={() => handleContactSupplier('email')}
+              onPress={() => handleContactSupplier("email")}
             >
               <Text style={styles.contactButtonText}>Email</Text>
             </TouchableOpacity>
           </View>
-          
+
           <View style={styles.contactItem}>
-            <MapPin size={20} color={Colors.primary.burgundy} style={styles.contactIcon} />
+            <MapPin
+              size={20}
+              color={Colors.primary.burgundy}
+              style={styles.contactIcon}
+            />
             <Text style={styles.contactText}>{supplier.address}</Text>
           </View>
-          
+
           <View style={styles.divider} />
-          
+
           <View style={styles.productsHeader}>
             <Text style={styles.sectionTitle}>Products</Text>
-            <Text style={styles.productsCount}>{supplierProducts.length} items</Text>
+            <Text style={styles.productsCount}>
+              {supplierProducts.length} items
+            </Text>
           </View>
         </View>
-        
+
         <FlatList
           data={supplierProducts}
           renderItem={({ item }) => (
-            <ProductCard 
-              product={item} 
-              onPress={handleProductPress} 
-            />
+            <ProductCard product={item} onPress={handleProductPress} />
           )}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.productsList}
@@ -186,18 +235,21 @@ export default function SupplierDetailsScreen() {
           ListEmptyComponent={() => (
             <View style={styles.emptyProductsContainer}>
               <Package size={48} color={Colors.neutral.lightGray} />
-              <Text style={styles.emptyProductsText}>No products available</Text>
+              <Text style={styles.emptyProductsText}>
+                No products available
+              </Text>
             </View>
           )}
         />
       </ScrollView>
-      
+
       <View style={styles.footer}>
-        <TouchableOpacity 
-          style={styles.orderButton}
-          onPress={handlePlaceOrder}
-        >
-          <ShoppingCart size={20} color={Colors.neutral.white} style={styles.orderButtonIcon} />
+        <TouchableOpacity style={styles.orderButton} onPress={handlePlaceOrder}>
+          <ShoppingCart
+            size={20}
+            color={Colors.neutral.white}
+            style={styles.orderButtonIcon}
+          />
           <Text style={styles.orderButtonText}>Place Order</Text>
         </TouchableOpacity>
       </View>
@@ -214,7 +266,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   supplierImage: {
-    width: '100%',
+    width: "100%",
     height: 200,
   },
   supplierInfo: {
@@ -222,18 +274,18 @@ const styles = StyleSheet.create({
   },
   supplierName: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.neutral.black,
     marginBottom: 8,
   },
   ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 12,
   },
   ratingText: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
     color: Colors.neutral.darkGray,
     marginLeft: 4,
     marginRight: 8,
@@ -243,13 +295,13 @@ const styles = StyleSheet.create({
     color: Colors.neutral.gray,
   },
   categoriesContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     marginBottom: 16,
   },
   categoryBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: Colors.neutral.extraLightGray,
     paddingHorizontal: 12,
     paddingVertical: 6,
@@ -271,13 +323,13 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
     marginBottom: 12,
   },
   contactItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 16,
   },
   contactIcon: {
@@ -289,20 +341,20 @@ const styles = StyleSheet.create({
     color: Colors.neutral.darkGray,
   },
   contactButton: {
-    backgroundColor: Colors.primary.burgundy + '20',
+    backgroundColor: Colors.primary.burgundy + "20",
     paddingHorizontal: 16,
     paddingVertical: 6,
     borderRadius: 8,
   },
   contactButtonText: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
     color: Colors.primary.burgundy,
   },
   productsHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 8,
   },
   productsList: {
@@ -310,8 +362,8 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   emptyProductsContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: 24,
     backgroundColor: Colors.neutral.extraLightGray,
     borderRadius: 12,
@@ -328,11 +380,11 @@ const styles = StyleSheet.create({
     borderTopColor: Colors.neutral.extraLightGray,
   },
   orderButton: {
-    flexDirection: 'row',
+    flexDirection: "row",
     backgroundColor: Colors.primary.burgundy,
     borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     height: 56,
   },
   orderButtonIcon: {
@@ -340,18 +392,18 @@ const styles = StyleSheet.create({
   },
   orderButtonText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.white,
   },
   notFoundContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: 24,
   },
   notFoundText: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.darkGray,
     marginTop: 16,
     marginBottom: 24,
@@ -365,6 +417,6 @@ const styles = StyleSheet.create({
   backButtonText: {
     color: Colors.neutral.white,
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
 });

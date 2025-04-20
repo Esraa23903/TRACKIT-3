@@ -1,90 +1,101 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useAuthStore } from '@/store/auth-store';
-import Colors from '@/constants/colors';
-import { ArrowLeft, Building2, MapPin, Phone } from 'lucide-react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
+import { useRouter } from "expo-router";
+import { useAuthStore } from "@/store/auth-store";
+import Colors from "@/constants/colors";
+import { ArrowLeft, Building2, MapPin, Phone } from "lucide-react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function BusinessInfoScreen() {
   const router = useRouter();
   const { signup, isLoading } = useAuthStore();
-  
+
   // Get user data from previous screens (in a real app, you'd use a form state manager)
-  const [businessName, setBusinessName] = useState('');
-  const [address, setAddress] = useState('');
-  const [phone, setPhone] = useState('');
-  
+  const [businessName, setBusinessName] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+
   // Form validation
-  const [businessNameError, setBusinessNameError] = useState('');
-  const [addressError, setAddressError] = useState('');
-  const [phoneError, setPhoneError] = useState('');
-  
+  const [businessNameError, setBusinessNameError] = useState("");
+  const [addressError, setAddressError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+
   // Get user data from previous screens (in a real app, you'd use a form state manager or route params)
-  const userType = 'business'; // This would come from the account-type screen
-  const name = 'John Doe'; // This would come from the login-info screen
-  const email = 'john@example.com'; // This would come from the login-info screen
-  
+  const userType = "business"; // This would come from the account-type screen
+  const name = "John Doe"; // This would come from the login-info screen
+  const email = "john@example.com"; // This would come from the login-info screen
+
   const validateBusinessName = (value: string) => {
     if (!value.trim()) {
-      setBusinessNameError('Business name is required');
+      setBusinessNameError("Business name is required");
       return false;
     }
-    setBusinessNameError('');
+    setBusinessNameError("");
     return true;
   };
-  
+
   const validateAddress = (value: string) => {
     if (!value.trim()) {
-      setAddressError('Address is required');
+      setAddressError("Address is required");
       return false;
     }
-    setAddressError('');
+    setAddressError("");
     return true;
   };
-  
+
   const validatePhone = (value: string) => {
     const phoneRegex = /^\+?[0-9]{10,15}$/;
     if (!value.trim()) {
-      setPhoneError('Phone number is required');
+      setPhoneError("Phone number is required");
       return false;
-    } else if (!phoneRegex.test(value.replace(/\s/g, ''))) {
-      setPhoneError('Please enter a valid phone number');
+    } else if (!phoneRegex.test(value.replace(/\s/g, ""))) {
+      setPhoneError("Please enter a valid phone number");
       return false;
     }
-    setPhoneError('');
+    setPhoneError("");
     return true;
   };
-  
+
   const handleSubmit = async () => {
     const isBusinessNameValid = validateBusinessName(businessName);
     const isAddressValid = validateAddress(address);
     const isPhoneValid = validatePhone(phone);
-    
+
     if (isBusinessNameValid && isAddressValid && isPhoneValid) {
       try {
         // In a real app, you'd collect all user data from previous screens
-        await signup({
-          name,
-          email,
-          businessName,
-          userType,
-          // You might want to store address and phone in a user profile
-        }, 'password123'); // In a real app, you'd get the password from the previous screen
-        
+        await signup(
+          {
+            name,
+            email,
+            businessName,
+            userType,
+            // You might want to store address and phone in a user profile
+          },
+          "password123"
+        ); // In a real app, you'd get the password from the previous screen
+
         // Navigate to the main app
-        router.replace('/(tabs)');
+        router.replace("/(tabs)");
       } catch (error) {
-        console.error('Signup error:', error);
+        console.error("Signup error:", error);
       }
     }
   };
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.header}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.backButton}
             onPress={() => router.back()}
           >
@@ -92,14 +103,18 @@ export default function BusinessInfoScreen() {
           </TouchableOpacity>
           <Text style={styles.title}>Business Information</Text>
         </View>
-        
+
         <Text style={styles.subtitle}>Tell us about your business</Text>
-        
+
         <View style={styles.form}>
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Business Name</Text>
             <View style={styles.inputContainer}>
-              <Building2 size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
+              <Building2
+                size={20}
+                color={Colors.neutral.gray}
+                style={styles.inputIcon}
+              />
               <TextInput
                 style={styles.input}
                 placeholder="Enter your business name"
@@ -108,13 +123,19 @@ export default function BusinessInfoScreen() {
                 onBlur={() => validateBusinessName(businessName)}
               />
             </View>
-            {businessNameError ? <Text style={styles.errorText}>{businessNameError}</Text> : null}
+            {businessNameError ? (
+              <Text style={styles.errorText}>{businessNameError}</Text>
+            ) : null}
           </View>
-          
+
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Business Address</Text>
             <View style={styles.inputContainer}>
-              <MapPin size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
+              <MapPin
+                size={20}
+                color={Colors.neutral.gray}
+                style={styles.inputIcon}
+              />
               <TextInput
                 style={styles.input}
                 placeholder="Enter your business address"
@@ -123,13 +144,19 @@ export default function BusinessInfoScreen() {
                 onBlur={() => validateAddress(address)}
               />
             </View>
-            {addressError ? <Text style={styles.errorText}>{addressError}</Text> : null}
+            {addressError ? (
+              <Text style={styles.errorText}>{addressError}</Text>
+            ) : null}
           </View>
-          
+
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Phone Number</Text>
             <View style={styles.inputContainer}>
-              <Phone size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
+              <Phone
+                size={20}
+                color={Colors.neutral.gray}
+                style={styles.inputIcon}
+              />
               <TextInput
                 style={styles.input}
                 placeholder="Enter your phone number"
@@ -139,10 +166,12 @@ export default function BusinessInfoScreen() {
                 onBlur={() => validatePhone(phone)}
               />
             </View>
-            {phoneError ? <Text style={styles.errorText}>{phoneError}</Text> : null}
+            {phoneError ? (
+              <Text style={styles.errorText}>{phoneError}</Text>
+            ) : null}
           </View>
         </View>
-        
+
         <TouchableOpacity
           style={styles.submitButton}
           onPress={handleSubmit}
@@ -169,8 +198,8 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 32,
   },
   backButton: {
@@ -178,7 +207,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.neutral.black,
   },
   subtitle: {
@@ -194,13 +223,13 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.darkGray,
     marginBottom: 8,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
     borderColor: Colors.neutral.extraLightGray,
     borderRadius: 12,
@@ -212,7 +241,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    height: '100%',
+    height: "100%",
     fontSize: 16,
     color: Colors.neutral.black,
   },
@@ -226,12 +255,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary.burgundy,
     borderRadius: 12,
     height: 56,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   submitButtonText: {
     color: Colors.neutral.white,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });

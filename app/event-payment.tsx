@@ -1,94 +1,116 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Alert, Image } from 'react-native';
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Colors from '@/constants/colors';
-import { ArrowLeft, Calendar, Clock, CreditCard, CheckCircle, User, Mail, Phone } from 'lucide-react-native';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  Image,
+} from "react-native";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Colors from "@/constants/colors";
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  CreditCard,
+  CheckCircle,
+  User,
+  Mail,
+  Phone,
+} from "lucide-react-native";
 
 export default function EventPaymentScreen() {
   const { id, title, price, date, time } = useLocalSearchParams();
   const router = useRouter();
-  
+
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
-    nameOnCard: '',
+    name: "",
+    email: "",
+    phone: "",
+    cardNumber: "",
+    expiryDate: "",
+    cvv: "",
+    nameOnCard: "",
   });
-  
+
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('creditCard');
-  
+  const [selectedPaymentMethod, setSelectedPaymentMethod] =
+    useState("creditCard");
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    
+
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = "Name is required";
     }
-    
+
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = "Email is invalid";
     }
-    
+
     if (!formData.phone.trim()) {
-      newErrors.phone = 'Phone number is required';
+      newErrors.phone = "Phone number is required";
     }
-    
-    if (selectedPaymentMethod === 'creditCard') {
+
+    if (selectedPaymentMethod === "creditCard") {
       if (!formData.cardNumber.trim()) {
-        newErrors.cardNumber = 'Card number is required';
-      } else if (!/^\d{16}$/.test(formData.cardNumber.replace(/\s/g, ''))) {
-        newErrors.cardNumber = 'Card number must be 16 digits';
+        newErrors.cardNumber = "Card number is required";
+      } else if (!/^\d{16}$/.test(formData.cardNumber.replace(/\s/g, ""))) {
+        newErrors.cardNumber = "Card number must be 16 digits";
       }
-      
+
       if (!formData.expiryDate.trim()) {
-        newErrors.expiryDate = 'Expiry date is required';
+        newErrors.expiryDate = "Expiry date is required";
       } else if (!/^\d{2}\/\d{2}$/.test(formData.expiryDate)) {
-        newErrors.expiryDate = 'Expiry date must be in MM/YY format';
+        newErrors.expiryDate = "Expiry date must be in MM/YY format";
       }
-      
+
       if (!formData.cvv.trim()) {
-        newErrors.cvv = 'CVV is required';
+        newErrors.cvv = "CVV is required";
       } else if (!/^\d{3,4}$/.test(formData.cvv)) {
-        newErrors.cvv = 'CVV must be 3 or 4 digits';
+        newErrors.cvv = "CVV must be 3 or 4 digits";
       }
-      
+
       if (!formData.nameOnCard.trim()) {
-        newErrors.nameOnCard = 'Name on card is required';
+        newErrors.nameOnCard = "Name on card is required";
       }
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  
+
   const handleInputChange = (field: string, value: string) => {
     // Format card number with spaces
-    if (field === 'cardNumber') {
-      value = value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
+    if (field === "cardNumber") {
+      value = value
+        .replace(/\s/g, "")
+        .replace(/(\d{4})/g, "$1 ")
+        .trim();
     }
-    
+
     // Format expiry date with slash
-    if (field === 'expiryDate') {
-      value = value.replace(/\//g, '');
+    if (field === "expiryDate") {
+      value = value.replace(/\//g, "");
       if (value.length > 2) {
-        value = value.substring(0, 2) + '/' + value.substring(2, 4);
+        value = value.substring(0, 2) + "/" + value.substring(2, 4);
       }
     }
-    
+
     setFormData({ ...formData, [field]: value });
-    
+
     // Clear error when typing
     if (errors[field]) {
-      setErrors({ ...errors, [field]: '' });
+      setErrors({ ...errors, [field]: "" });
     }
   };
-  
+
   const handlePayment = () => {
     if (validateForm()) {
       // Show loading or processing state in a real app
@@ -101,64 +123,81 @@ export default function EventPaymentScreen() {
               text: "OK",
               onPress: () => {
                 // Navigate back to events screen
-                router.push('/(tabs)/events');
-              }
-            }
+                router.push("/(tabs)/events");
+              },
+            },
           ]
         );
       }, 1500);
     }
   };
-  
+
   const formatPrice = (priceStr: string | string[]) => {
-    const numPrice = parseFloat(Array.isArray(priceStr) ? priceStr[0] : priceStr);
+    const numPrice = parseFloat(
+      Array.isArray(priceStr) ? priceStr[0] : priceStr
+    );
     return numPrice.toFixed(2);
   };
-  
+
   const formatDate = (dateStr: string | string[]) => {
     const dateString = Array.isArray(dateStr) ? dateStr[0] : dateStr;
-    const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
-    return new Date(dateString).toLocaleDateString('en-US', options);
+    const options: Intl.DateTimeFormatOptions = {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    };
+    return new Date(dateString).toLocaleDateString("en-US", options);
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
-      <Stack.Screen 
+    <SafeAreaView style={styles.container} edges={["bottom"]}>
+      <Stack.Screen
         options={{
-          title: 'Event Registration',
+          title: "Event Registration",
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <ArrowLeft size={24} color={Colors.neutral.black} />
             </TouchableOpacity>
           ),
-        }} 
+        }}
       />
-      
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.eventSummary}>
           <Text style={styles.eventTitle}>{title}</Text>
-          
+
           <View style={styles.eventDetails}>
             <View style={styles.eventDetailItem}>
-              <Calendar size={16} color={Colors.neutral.gray} style={styles.eventDetailIcon} />
+              <Calendar
+                size={16}
+                color={Colors.neutral.gray}
+                style={styles.eventDetailIcon}
+              />
               <Text style={styles.eventDetailText}>{formatDate(date)}</Text>
             </View>
-            
+
             <View style={styles.eventDetailItem}>
-              <Clock size={16} color={Colors.neutral.gray} style={styles.eventDetailIcon} />
+              <Clock
+                size={16}
+                color={Colors.neutral.gray}
+                style={styles.eventDetailIcon}
+              />
               <Text style={styles.eventDetailText}>{time}</Text>
             </View>
           </View>
-          
+
           <View style={styles.priceSummary}>
             <Text style={styles.priceLabel}>Registration Fee</Text>
             <Text style={styles.priceValue}>${formatPrice(price)}</Text>
           </View>
         </View>
-        
+
         <View style={styles.formSection}>
           <Text style={styles.sectionTitle}>Personal Information</Text>
-          
+
           <View style={styles.inputGroup}>
             <View style={styles.inputIconContainer}>
               <User size={20} color={Colors.neutral.gray} />
@@ -167,11 +206,11 @@ export default function EventPaymentScreen() {
               style={[styles.input, errors.name ? styles.inputError : null]}
               placeholder="Full Name"
               value={formData.name}
-              onChangeText={(text) => handleInputChange('name', text)}
+              onChangeText={(text) => handleInputChange("name", text)}
             />
           </View>
           {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
-          
+
           <View style={styles.inputGroup}>
             <View style={styles.inputIconContainer}>
               <Mail size={20} color={Colors.neutral.gray} />
@@ -182,11 +221,11 @@ export default function EventPaymentScreen() {
               keyboardType="email-address"
               autoCapitalize="none"
               value={formData.email}
-              onChangeText={(text) => handleInputChange('email', text)}
+              onChangeText={(text) => handleInputChange("email", text)}
             />
           </View>
           {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
-          
+
           <View style={styles.inputGroup}>
             <View style={styles.inputIconContainer}>
               <Phone size={20} color={Colors.neutral.gray} />
@@ -196,111 +235,133 @@ export default function EventPaymentScreen() {
               placeholder="Phone Number"
               keyboardType="phone-pad"
               value={formData.phone}
-              onChangeText={(text) => handleInputChange('phone', text)}
+              onChangeText={(text) => handleInputChange("phone", text)}
             />
           </View>
           {errors.phone && <Text style={styles.errorText}>{errors.phone}</Text>}
         </View>
-        
+
         <View style={styles.formSection}>
           <Text style={styles.sectionTitle}>Payment Method</Text>
-          
+
           <View style={styles.paymentMethods}>
             <TouchableOpacity
               style={[
                 styles.paymentMethodCard,
-                selectedPaymentMethod === 'creditCard' && styles.selectedPaymentMethod
+                selectedPaymentMethod === "creditCard" &&
+                  styles.selectedPaymentMethod,
               ]}
-              onPress={() => setSelectedPaymentMethod('creditCard')}
+              onPress={() => setSelectedPaymentMethod("creditCard")}
             >
               <View style={styles.paymentMethodContent}>
                 <CreditCard size={24} color={Colors.primary.burgundy} />
                 <Text style={styles.paymentMethodText}>Credit Card</Text>
               </View>
-              {selectedPaymentMethod === 'creditCard' && (
+              {selectedPaymentMethod === "creditCard" && (
                 <CheckCircle size={20} color={Colors.primary.burgundy} />
               )}
             </TouchableOpacity>
-            
+
             <TouchableOpacity
               style={[
                 styles.paymentMethodCard,
-                selectedPaymentMethod === 'paypal' && styles.selectedPaymentMethod
+                selectedPaymentMethod === "paypal" &&
+                  styles.selectedPaymentMethod,
               ]}
-              onPress={() => setSelectedPaymentMethod('paypal')}
+              onPress={() => setSelectedPaymentMethod("paypal")}
             >
               <View style={styles.paymentMethodContent}>
-                <Image 
-                  source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PayPal.svg/1200px-PayPal.svg.png' }} 
-                  style={styles.paypalIcon} 
+                <Image
+                  source={{
+                    uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PayPal.svg/1200px-PayPal.svg.png",
+                  }}
+                  style={styles.paypalIcon}
                   resizeMode="contain"
                 />
                 <Text style={styles.paymentMethodText}>PayPal</Text>
               </View>
-              {selectedPaymentMethod === 'paypal' && (
+              {selectedPaymentMethod === "paypal" && (
                 <CheckCircle size={20} color={Colors.primary.burgundy} />
               )}
             </TouchableOpacity>
           </View>
-          
-          {selectedPaymentMethod === 'creditCard' && (
+
+          {selectedPaymentMethod === "creditCard" && (
             <View style={styles.creditCardForm}>
               <View style={styles.inputGroup}>
                 <TextInput
-                  style={[styles.input, errors.cardNumber ? styles.inputError : null]}
+                  style={[
+                    styles.input,
+                    errors.cardNumber ? styles.inputError : null,
+                  ]}
                   placeholder="Card Number"
                   keyboardType="numeric"
                   maxLength={19} // 16 digits + 3 spaces
                   value={formData.cardNumber}
-                  onChangeText={(text) => handleInputChange('cardNumber', text)}
+                  onChangeText={(text) => handleInputChange("cardNumber", text)}
                 />
               </View>
-              {errors.cardNumber && <Text style={styles.errorText}>{errors.cardNumber}</Text>}
-              
+              {errors.cardNumber && (
+                <Text style={styles.errorText}>{errors.cardNumber}</Text>
+              )}
+
               <View style={styles.rowInputs}>
                 <View style={[styles.inputGroup, { flex: 1, marginRight: 8 }]}>
                   <TextInput
-                    style={[styles.input, errors.expiryDate ? styles.inputError : null]}
+                    style={[
+                      styles.input,
+                      errors.expiryDate ? styles.inputError : null,
+                    ]}
                     placeholder="MM/YY"
                     keyboardType="numeric"
                     maxLength={5} // MM/YY
                     value={formData.expiryDate}
-                    onChangeText={(text) => handleInputChange('expiryDate', text)}
+                    onChangeText={(text) =>
+                      handleInputChange("expiryDate", text)
+                    }
                   />
                 </View>
-                
+
                 <View style={[styles.inputGroup, { flex: 1, marginLeft: 8 }]}>
                   <TextInput
-                    style={[styles.input, errors.cvv ? styles.inputError : null]}
+                    style={[
+                      styles.input,
+                      errors.cvv ? styles.inputError : null,
+                    ]}
                     placeholder="CVV"
                     keyboardType="numeric"
                     maxLength={4}
                     value={formData.cvv}
-                    onChangeText={(text) => handleInputChange('cvv', text)}
+                    onChangeText={(text) => handleInputChange("cvv", text)}
                     secureTextEntry
                   />
                 </View>
               </View>
-              
+
               {(errors.expiryDate || errors.cvv) && (
                 <Text style={styles.errorText}>
                   {errors.expiryDate || errors.cvv}
                 </Text>
               )}
-              
+
               <View style={styles.inputGroup}>
                 <TextInput
-                  style={[styles.input, errors.nameOnCard ? styles.inputError : null]}
+                  style={[
+                    styles.input,
+                    errors.nameOnCard ? styles.inputError : null,
+                  ]}
                   placeholder="Name on Card"
                   value={formData.nameOnCard}
-                  onChangeText={(text) => handleInputChange('nameOnCard', text)}
+                  onChangeText={(text) => handleInputChange("nameOnCard", text)}
                 />
               </View>
-              {errors.nameOnCard && <Text style={styles.errorText}>{errors.nameOnCard}</Text>}
+              {errors.nameOnCard && (
+                <Text style={styles.errorText}>{errors.nameOnCard}</Text>
+              )}
             </View>
           )}
-          
-          {selectedPaymentMethod === 'paypal' && (
+
+          {selectedPaymentMethod === "paypal" && (
             <View style={styles.paypalInfo}>
               <Text style={styles.paypalText}>
                 You will be redirected to PayPal to complete your payment.
@@ -308,20 +369,19 @@ export default function EventPaymentScreen() {
             </View>
           )}
         </View>
-        
+
         <View style={styles.totalSection}>
           <Text style={styles.totalLabel}>Total</Text>
           <Text style={styles.totalAmount}>${formatPrice(price)}</Text>
         </View>
       </ScrollView>
-      
+
       <View style={styles.footer}>
-        <TouchableOpacity 
-          style={styles.payButton}
-          onPress={handlePayment}
-        >
+        <TouchableOpacity style={styles.payButton} onPress={handlePayment}>
           <Text style={styles.payButtonText}>
-            {selectedPaymentMethod === 'creditCard' ? 'Pay Now' : 'Continue to PayPal'}
+            {selectedPaymentMethod === "creditCard"
+              ? "Pay Now"
+              : "Continue to PayPal"}
           </Text>
         </TouchableOpacity>
       </View>
@@ -346,7 +406,7 @@ const styles = StyleSheet.create({
   },
   eventTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
     marginBottom: 12,
   },
@@ -354,8 +414,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   eventDetailItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 8,
   },
   eventDetailIcon: {
@@ -366,21 +426,21 @@ const styles = StyleSheet.create({
     color: Colors.neutral.darkGray,
   },
   priceSummary: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingTop: 12,
     borderTopWidth: 1,
     borderTopColor: Colors.neutral.lightGray,
   },
   priceLabel: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
     color: Colors.neutral.darkGray,
   },
   priceValue: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.primary.burgundy,
   },
   formSection: {
@@ -388,17 +448,17 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
     marginBottom: 16,
   },
   inputGroup: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: Colors.neutral.extraLightGray,
     borderRadius: 8,
     marginBottom: 12,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   inputIconContainer: {
     padding: 12,
@@ -422,15 +482,15 @@ const styles = StyleSheet.create({
     marginTop: -8,
   },
   paymentMethods: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 16,
   },
   paymentMethodCard: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     backgroundColor: Colors.neutral.extraLightGray,
     borderRadius: 8,
     padding: 12,
@@ -442,13 +502,13 @@ const styles = StyleSheet.create({
     borderColor: Colors.primary.burgundy,
   },
   paymentMethodContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   paymentMethodText: {
     marginLeft: 8,
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
     color: Colors.neutral.darkGray,
   },
   paypalIcon: {
@@ -459,8 +519,8 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   rowInputs: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   paypalInfo: {
     backgroundColor: Colors.neutral.extraLightGray,
@@ -471,12 +531,12 @@ const styles = StyleSheet.create({
   paypalText: {
     fontSize: 14,
     color: Colors.neutral.darkGray,
-    textAlign: 'center',
+    textAlign: "center",
   },
   totalSection: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingVertical: 16,
     borderTopWidth: 1,
     borderTopColor: Colors.neutral.extraLightGray,
@@ -484,12 +544,12 @@ const styles = StyleSheet.create({
   },
   totalLabel: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
   },
   totalAmount: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.primary.burgundy,
   },
   footer: {
@@ -501,11 +561,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary.burgundy,
     borderRadius: 12,
     paddingVertical: 16,
-    alignItems: 'center',
+    alignItems: "center",
   },
   payButtonText: {
     color: Colors.neutral.white,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });

@@ -1,25 +1,43 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter, useLocalSearchParams } from 'expo-router';
-import Colors from '@/constants/colors';
-import { ArrowLeft, User, Mail, Lock, Eye, EyeOff, Building } from 'lucide-react-native';
-import { useAuthStore } from '@/store/auth-store';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  ActivityIndicator,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter, useLocalSearchParams } from "expo-router";
+import Colors from "@/constants/colors";
+import {
+  ArrowLeft,
+  User,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  Building,
+} from "lucide-react-native";
+import { useAuthStore } from "@/store/auth-store";
 
 export default function LoginInfoScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const accountType = params.accountType as string;
   const { signup, isLoading } = useAuthStore();
-  
+
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    businessName: '',
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    businessName: "",
   });
-  
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -29,43 +47,43 @@ export default function LoginInfoScreen() {
       ...formData,
       [field]: value,
     });
-    
+
     // Clear error when typing
     if (errors[field]) {
       setErrors({
         ...errors,
-        [field]: '',
+        [field]: "",
       });
     }
   };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    
+
     if (!formData.name.trim()) {
-      newErrors.name = 'Full name is required';
+      newErrors.name = "Full name is required";
     }
-    
+
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
+      newErrors.email = "Please enter a valid email";
     }
-    
+
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = "Password must be at least 6 characters";
     }
-    
+
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = "Passwords do not match";
     }
-    
+
     if (!formData.businessName.trim()) {
-      newErrors.businessName = 'Business name is required';
+      newErrors.businessName = "Business name is required";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -77,25 +95,28 @@ export default function LoginInfoScreen() {
   const handleSignUp = async () => {
     if (validateForm()) {
       try {
-        await signup({
-          name: formData.name,
-          email: formData.email,
-          businessName: formData.businessName,
-          userType: accountType as any,
-        }, formData.password);
-        
+        await signup(
+          {
+            name: formData.name,
+            email: formData.email,
+            businessName: formData.businessName,
+            userType: accountType as any,
+          },
+          formData.password
+        );
+
         // Navigate to business info screen for all users
-        router.push('/(auth)/business-info');
+        router.push("/(auth)/business-info");
       } catch (error) {
-        console.error('Signup error:', error);
+        console.error("Signup error:", error);
       }
     }
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
+    <SafeAreaView style={styles.container} edges={["bottom"]}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardAvoidingView}
       >
         <View style={styles.header}>
@@ -106,69 +127,116 @@ export default function LoginInfoScreen() {
           <View style={styles.placeholder} />
         </View>
 
-        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+        >
           <Text style={styles.subtitle}>
-            {accountType === 'business' 
-              ? 'Set up your business owner account' 
-              : accountType === 'supplier' 
-                ? 'Set up your supplier account'
-                : 'Set up your event organizer account'}
+            {accountType === "business"
+              ? "Set up your business owner account"
+              : accountType === "supplier"
+              ? "Set up your supplier account"
+              : "Set up your event organizer account"}
           </Text>
 
           <View style={styles.form}>
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>Full Name</Text>
-              <View style={[styles.inputContainer, errors.name ? styles.inputError : null]}>
-                <User size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
+              <View
+                style={[
+                  styles.inputContainer,
+                  errors.name ? styles.inputError : null,
+                ]}
+              >
+                <User
+                  size={20}
+                  color={Colors.neutral.gray}
+                  style={styles.inputIcon}
+                />
                 <TextInput
                   style={styles.input}
                   placeholder="Enter your full name"
                   value={formData.name}
-                  onChangeText={(text) => handleInputChange('name', text)}
+                  onChangeText={(text) => handleInputChange("name", text)}
                 />
               </View>
-              {errors.name ? <Text style={styles.errorText}>{errors.name}</Text> : null}
+              {errors.name ? (
+                <Text style={styles.errorText}>{errors.name}</Text>
+              ) : null}
             </View>
 
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>Email</Text>
-              <View style={[styles.inputContainer, errors.email ? styles.inputError : null]}>
-                <Mail size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
+              <View
+                style={[
+                  styles.inputContainer,
+                  errors.email ? styles.inputError : null,
+                ]}
+              >
+                <Mail
+                  size={20}
+                  color={Colors.neutral.gray}
+                  style={styles.inputIcon}
+                />
                 <TextInput
                   style={styles.input}
                   placeholder="Enter your email"
                   value={formData.email}
-                  onChangeText={(text) => handleInputChange('email', text)}
+                  onChangeText={(text) => handleInputChange("email", text)}
                   keyboardType="email-address"
                   autoCapitalize="none"
                 />
               </View>
-              {errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
+              {errors.email ? (
+                <Text style={styles.errorText}>{errors.email}</Text>
+              ) : null}
             </View>
 
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>Business Name</Text>
-              <View style={[styles.inputContainer, errors.businessName ? styles.inputError : null]}>
-                <Building size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
+              <View
+                style={[
+                  styles.inputContainer,
+                  errors.businessName ? styles.inputError : null,
+                ]}
+              >
+                <Building
+                  size={20}
+                  color={Colors.neutral.gray}
+                  style={styles.inputIcon}
+                />
                 <TextInput
                   style={styles.input}
                   placeholder="Enter your business name"
                   value={formData.businessName}
-                  onChangeText={(text) => handleInputChange('businessName', text)}
+                  onChangeText={(text) =>
+                    handleInputChange("businessName", text)
+                  }
                 />
               </View>
-              {errors.businessName ? <Text style={styles.errorText}>{errors.businessName}</Text> : null}
+              {errors.businessName ? (
+                <Text style={styles.errorText}>{errors.businessName}</Text>
+              ) : null}
             </View>
 
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>Password</Text>
-              <View style={[styles.inputContainer, errors.password ? styles.inputError : null]}>
-                <Lock size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
+              <View
+                style={[
+                  styles.inputContainer,
+                  errors.password ? styles.inputError : null,
+                ]}
+              >
+                <Lock
+                  size={20}
+                  color={Colors.neutral.gray}
+                  style={styles.inputIcon}
+                />
                 <TextInput
                   style={styles.input}
                   placeholder="Create a password"
                   value={formData.password}
-                  onChangeText={(text) => handleInputChange('password', text)}
+                  onChangeText={(text) => handleInputChange("password", text)}
                   secureTextEntry={!showPassword}
                 />
                 <TouchableOpacity
@@ -182,18 +250,31 @@ export default function LoginInfoScreen() {
                   )}
                 </TouchableOpacity>
               </View>
-              {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
+              {errors.password ? (
+                <Text style={styles.errorText}>{errors.password}</Text>
+              ) : null}
             </View>
 
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>Confirm Password</Text>
-              <View style={[styles.inputContainer, errors.confirmPassword ? styles.inputError : null]}>
-                <Lock size={20} color={Colors.neutral.gray} style={styles.inputIcon} />
+              <View
+                style={[
+                  styles.inputContainer,
+                  errors.confirmPassword ? styles.inputError : null,
+                ]}
+              >
+                <Lock
+                  size={20}
+                  color={Colors.neutral.gray}
+                  style={styles.inputIcon}
+                />
                 <TextInput
                   style={styles.input}
                   placeholder="Confirm your password"
                   value={formData.confirmPassword}
-                  onChangeText={(text) => handleInputChange('confirmPassword', text)}
+                  onChangeText={(text) =>
+                    handleInputChange("confirmPassword", text)
+                  }
                   secureTextEntry={!showConfirmPassword}
                 />
                 <TouchableOpacity
@@ -207,7 +288,9 @@ export default function LoginInfoScreen() {
                   )}
                 </TouchableOpacity>
               </View>
-              {errors.confirmPassword ? <Text style={styles.errorText}>{errors.confirmPassword}</Text> : null}
+              {errors.confirmPassword ? (
+                <Text style={styles.errorText}>{errors.confirmPassword}</Text>
+              ) : null}
             </View>
           </View>
         </ScrollView>
@@ -239,9 +322,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     padding: 16,
     paddingTop: 8,
   },
@@ -250,7 +333,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.neutral.black,
   },
   placeholder: {
@@ -265,7 +348,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.neutral.gray,
     marginBottom: 24,
-    textAlign: 'center',
+    textAlign: "center",
   },
   form: {
     marginBottom: 24,
@@ -279,8 +362,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
     borderColor: Colors.neutral.extraLightGray,
     borderRadius: 12,
@@ -296,7 +379,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    height: '100%',
+    height: "100%",
     fontSize: 16,
     color: Colors.neutral.black,
   },
@@ -319,12 +402,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary.burgundy,
     borderRadius: 12,
     height: 56,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   signUpButtonText: {
     color: Colors.neutral.white,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });

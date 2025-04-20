@@ -1,12 +1,26 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
-import { useRouter } from 'expo-router';
-import Colors from '@/constants/colors';
-import { Store, Truck, Package, Calendar, ArrowLeft, Check } from 'lucide-react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
+import { useRouter } from "expo-router";
+import Colors from "@/constants/colors";
+import {
+  Store,
+  Truck,
+  Package,
+  Calendar,
+  ArrowLeft,
+  Check,
+} from "lucide-react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 
-type AccountType = 'business' | 'supplier' | 'organizer';
+type AccountType = "business" | "supplier" | "organizer";
 
 interface AccountOption {
   type: AccountType;
@@ -22,21 +36,22 @@ export default function AccountTypeScreen() {
   // HIGHLIGHT: Merged suppliers and distributors into a single option
   const accountOptions: AccountOption[] = [
     {
-      type: 'business',
-      title: 'Small Business Owner',
-      description: 'Manage inventory, track sales, and connect with suppliers',
+      type: "business",
+      title: "Small Business Owner",
+      description: "Manage inventory, track sales, and connect with suppliers",
       icon: <Store size={24} color={Colors.neutral.white} />,
     },
     {
-      type: 'supplier',
-      title: 'Supplier / Distributor',
-      description: 'Manage products, shipments and logistics between businesses',
+      type: "supplier",
+      title: "Supplier / Distributor",
+      description:
+        "Manage products, shipments and logistics between businesses",
       icon: <Truck size={24} color={Colors.neutral.white} />,
     },
     {
-      type: 'organizer',
-      title: 'Event Organizer',
-      description: 'Create and manage events for businesses and suppliers',
+      type: "organizer",
+      title: "Event Organizer",
+      description: "Create and manage events for businesses and suppliers",
       icon: <Calendar size={24} color={Colors.neutral.white} />,
     },
   ];
@@ -49,14 +64,14 @@ export default function AccountTypeScreen() {
     if (selectedType) {
       // HIGHLIGHT: Navigate to login-info screen instead of directly signing up
       router.push({
-        pathname: '/(auth)/login-info',
-        params: { accountType: selectedType }
+        pathname: "/(auth)/login-info",
+        params: { accountType: selectedType },
       });
     }
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
+    <SafeAreaView style={styles.container} edges={["bottom"]}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={handleBack}>
           <ArrowLeft size={24} color={Colors.neutral.black} />
@@ -65,9 +80,14 @@ export default function AccountTypeScreen() {
         <View style={styles.placeholder} />
       </View>
 
-      <Text style={styles.subtitle}>Choose the type of account that best describes your role</Text>
+      <Text style={styles.subtitle}>
+        Choose the type of account that best describes your role
+      </Text>
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         {accountOptions.map((option) => (
           <TouchableOpacity
             key={option.type}
@@ -88,7 +108,9 @@ export default function AccountTypeScreen() {
               </LinearGradient>
               <View style={styles.optionTextContainer}>
                 <Text style={styles.optionTitle}>{option.title}</Text>
-                <Text style={styles.optionDescription}>{option.description}</Text>
+                <Text style={styles.optionDescription}>
+                  {option.description}
+                </Text>
               </View>
             </View>
             {selectedType === option.type && (
@@ -123,9 +145,9 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: 16,
   },
   backButton: {
@@ -133,7 +155,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.neutral.black,
   },
   placeholder: {
@@ -143,7 +165,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.neutral.gray,
     marginBottom: 24,
-    textAlign: 'center',
+    textAlign: "center",
   },
   scrollView: {
     flex: 1,
@@ -155,26 +177,26 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderWidth: 1,
     borderColor: Colors.neutral.extraLightGray,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   selectedCard: {
     borderColor: Colors.primary.burgundy,
     borderWidth: 2,
-    backgroundColor: Colors.neutral.extraLightGray + '20',
+    backgroundColor: Colors.neutral.extraLightGray + "20",
   },
   optionContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     flex: 1,
   },
   iconContainer: {
     width: 48,
     height: 48,
     borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: 16,
   },
   optionTextContainer: {
@@ -182,7 +204,7 @@ const styles = StyleSheet.create({
   },
   optionTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.neutral.black,
     marginBottom: 4,
   },
@@ -195,8 +217,8 @@ const styles = StyleSheet.create({
     height: 28,
     borderRadius: 14,
     backgroundColor: Colors.neutral.extraLightGray,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginLeft: 12,
   },
   footer: {
@@ -206,8 +228,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary.burgundy,
     borderRadius: 12,
     height: 56,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   disabledButton: {
     backgroundColor: Colors.neutral.lightGray,
@@ -215,6 +237,6 @@ const styles = StyleSheet.create({
   continueButtonText: {
     color: Colors.neutral.white,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });
